@@ -2,7 +2,7 @@
 
 This repository contains two main projects:
 
--   **Frontend (Angular)** → `CineWay-Projet-Angular`
+-   **Frontend (Angular)** → `CineWay-Projet-Angular` ( includes tests )
 -   **Backend (FastAPI + PostgreSQL)** → `cinema-ticket-selling-api`
 
 ------------------------------------------------------------------------
