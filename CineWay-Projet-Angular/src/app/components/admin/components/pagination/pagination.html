@@ -1,0 +1,21 @@
+<div class="flex items-center justify-between">
+  <p class="text-base text-gray-400">
+    Showing <span class="font-semibold text-white">{{ startIndex() }}</span> to <span class="font-semibold text-white">{{ endIndex() }}</span> of <span class="font-semibold text-white">{{ totalCount() }}</span> results
+  </p>
+  <div class="flex items-center gap-2">
+    <button
+      class="flex h-11 items-center justify-center rounded-xl border border-[#2a3644] bg-[#18222c] px-6 text-base font-medium text-gray-300 hover:bg-[#3d99f5] hover:text-white hover:border-[#3d99f5] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-[#18222c] disabled:hover:text-gray-300 disabled:hover:border-[#2a3644] transition-all duration-200"
+      (click)="previous.emit()"
+      [disabled]="page() === 1"
+    >
+      Previous
+    </button>
+    <button
+      class="flex h-11 items-center justify-center rounded-xl border border-[#2a3644] bg-[#18222c] px-6 text-base font-medium text-gray-300 hover:bg-[#3d99f5] hover:text-white hover:border-[#3d99f5] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-[#18222c] disabled:hover:text-gray-300 disabled:hover:border-[#2a3644] transition-all duration-200"
+      (click)="next.emit()"
+      [disabled]="page() >= totalPages()"
+    >
+      Next
+    </button>
+  </div>
+</div>

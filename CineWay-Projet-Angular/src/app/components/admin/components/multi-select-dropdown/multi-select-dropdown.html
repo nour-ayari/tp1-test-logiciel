@@ -1,0 +1,76 @@
+<div class="flex flex-col gap-2">
+  @if (showLabel() && label()) {
+    <label class="text-sm font-semibold text-white">
+      {{ label() }}
+      @if (required()) {
+        <span class="text-red-400">*</span>
+      }
+    </label>
+  }
+
+  <div class="relative">
+    <button
+      type="button"
+      [disabled]="disabled()"
+      [class.error]="control() && control()?.invalid && control()?.touched"
+      class="w-full rounded-lg bg-[#1a232f] border border-[#2a3644] px-4 py-2.5 text-white text-left focus:border-[#3d99f5] focus:outline-none transition-colors cursor-pointer flex items-center justify-between"
+      (click)="toggleDropdown()"
+    >
+      <span class="truncate">
+        @if (selectedValues().length > 0) {
+          {{ getSelectedLabels() }}
+        } @else {
+          <span class="text-gray-500">{{ placeholder() }}</span>
+        }
+      </span>
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </button>
+
+    @if (isOpen()) {
+      <div class="absolute top-full left-0 right-0 mt-2 rounded-lg bg-[#1a232f] border border-[#2a3644] shadow-lg z-10">
+        <div class="max-h-60 overflow-y-auto p-2">
+          @for (option of options(); track option.value) {
+            <label class="flex items-center gap-2 px-3 py-2 hover:bg-[#2a3644] rounded cursor-pointer transition-colors">
+              <input
+                type="checkbox"
+                [checked]="isSelected(option.value)"
+                (change)="toggleOption(option.value)"
+                class="rounded accent-[#3d99f5]"
+              />
+              <span class="text-sm text-white">{{ option.label }}</span>
+            </label>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (selectedValues().length > 0) {
+    <div class="flex flex-wrap gap-2">
+      @for (value of selectedValues(); track value) {
+        <div class="inline-flex items-center gap-2 bg-[#3d99f5]/20 text-[#3d99f5] px-3 py-1 rounded-full text-sm border border-[#3d99f5]/30">
+          {{ getSelectedLabel(value) }}
+          <button
+            type="button"
+            (click)="removeTag(value, $event)"
+            class="hover:opacity-70 transition-opacity"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  @if (control() && control()?.invalid && control()?.touched) {
+    <span class="text-xs text-red-400">
+      @if (control()?.errors?.['required']) {
+        {{ label() }} is required
+      }
+    </span>
+  }
+</div>

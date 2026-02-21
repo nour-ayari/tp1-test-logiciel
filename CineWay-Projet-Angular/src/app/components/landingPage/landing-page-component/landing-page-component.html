@@ -1,0 +1,13 @@
+<div class="min-h-screen grid grid-rows-[auto_1fr_auto] bg-gray-950">
+  <main class="flex flex-col">
+    <app-welcome-component
+      (showNowPlaying)="onShowNowPlaying()"
+    />
+    @defer (when showNowPlaying()) {
+      <app-now-playing-component />
+            <app-how-it-works-component />
+
+      <app-partners-component/>
+    }
+  </main>
+</div>

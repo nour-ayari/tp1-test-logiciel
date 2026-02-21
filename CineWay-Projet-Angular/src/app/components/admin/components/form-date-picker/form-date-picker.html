@@ -1,0 +1,26 @@
+<div class="flex flex-col gap-2">
+  @if (showLabel() && label()) {
+    <label class="text-sm font-semibold text-white">
+      {{ label() }}
+      @if (required()) {
+        <span class="text-red-400">*</span>
+      }
+    </label>
+  }
+  <input
+    type="date"
+    [value]="value()"
+    [disabled]="disabled()"
+    [class.error]="control() && control()?.invalid && control()?.touched"
+    class="w-full rounded-lg bg-[#1a232f] border border-[#2a3644] px-4 py-2.5 text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors cursor-pointer"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+  />
+  @if (control() && control()?.invalid && control()?.touched) {
+    <span class="text-xs text-red-400">
+      @if (control()?.errors?.['required']) {
+        {{ label() }} is required
+      }
+    </span>
+  }
+</div>

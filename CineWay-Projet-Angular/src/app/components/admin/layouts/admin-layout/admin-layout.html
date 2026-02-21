@@ -1,0 +1,13 @@
+<div class="min-h-screen bg-gray-950">
+  <app-admin-header></app-admin-header>
+
+  <div class="flex">
+    <app-admin-sidebar></app-admin-sidebar>
+
+    <div class="flex-1 flex flex-col lg:ml-64 bg-gray-950">
+      <main class="flex-1 pt-20">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+</div>

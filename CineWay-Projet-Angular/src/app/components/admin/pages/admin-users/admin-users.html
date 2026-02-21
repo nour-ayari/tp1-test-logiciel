@@ -1,0 +1,108 @@
+<div class="page-shell">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Admin · Users</p>
+      <h1 class="page-title">User Management</h1>
+      <p class="page-subtitle">Manage all users and administrators</p>
+    </div>
+    <app-primary-button label="Add Admin User" [icon]="true" (clicked)="onAddUser()">
+      <svg
+        icon
+        class="h-5 w-5"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
+      </svg>
+    </app-primary-button>
+  </div>
+
+  <div class="section-surface">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-[2fr_auto]">
+      <app-search-input
+        label="Search users"
+        placeholder="Search by name or email..."
+        [value]="searchQuery()"
+        [showLabel]="false"
+        (valueChange)="onSearch($event)"
+      ></app-search-input>
+      <div class="role-filter-buttons">
+        <button
+          class="role-filter-btn"
+          [class.active]="roleFilter() === 'all'"
+          (click)="onRoleChange('all')"
+        >
+          All
+        </button>
+        <button
+          class="role-filter-btn"
+          [class.active]="roleFilter() === 'user'"
+          (click)="onRoleChange('user')"
+        >
+          Users
+        </button>
+        <button
+          class="role-filter-btn"
+          [class.active]="roleFilter() === 'admin'"
+          (click)="onRoleChange('admin')"
+        >
+          Admins
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="section-surface loading-surface">
+      <div class="flex items-center justify-center py-10">
+        <div class="flex flex-col items-center gap-4">
+          <div
+            class="h-12 w-12 animate-spin rounded-full border-4 border-[#2a3644] border-t-[#3d99f5]"
+          ></div>
+          <p class="text-sm text-gray-300">Loading users...</p>
+        </div>
+      </div>
+    </div>
+  } @else if (error()) {
+    <div class="section-surface alert-error text-center">
+      <svg
+        class="mx-auto h-12 w-12 text-red-300 mb-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <p class="text-red-200 font-medium mb-3">{{ error() }}</p>
+      <button class="retry-btn" (click)="loadUsers()">Retry</button>
+    </div>
+  } @else {
+    <div class="section-surface table-block">
+      <app-admin-data-table
+        [data]="paginatedUsers()"
+        [columns]="tableColumns"
+        [loading]="loading()"
+        (actionClicked)="onTableAction($event)"
+      ></app-admin-data-table>
+    </div>
+
+    <div class="section-surface pagination-surface">
+      <app-pagination
+        [startIndex]="startIndex()"
+        [endIndex]="endIndex()"
+        [totalCount]="filteredUsers().length"
+        [page]="page()"
+        [totalPages]="totalPages()"
+        (previous)="previousPage()"
+        (next)="nextPage()"
+      ></app-pagination>
+    </div>
+  }
+</div>

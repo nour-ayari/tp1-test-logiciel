@@ -1,0 +1,304 @@
+<nav class="cw fixed w-full border-b border-gray-500 bg-gray-950 z-50 h-16">
+  <div class="max-w-7xl mx-auto flex items-center px-2 py-2">
+    <a
+      (click)="navigateToHome()"
+      class="flex items-center gap-2 no-underline"
+      style="text-decoration: none"
+    >
+      <img
+        src="https://img.icons8.com/?size=100&id=111180&format=png&color=228BE6"
+        class="h-7"
+        alt="CineWay Logo"
+      />
+      <span class="text-xl font-semibold text-heading no-underline">CineWay</span>
+    </a>
+
+    <div class="hidden md:flex flex-1 items-center justify-between ml-12">
+      <div class="search-container relative">
+        <form [formGroup]="searchForm" class="relative">
+          <svg class="search-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-4.35-4.35m1.85-5.4a7.25 7.25 0 11-14.5 0 7.25 7.25 0 0114.5 0z"
+            />
+          </svg>
+          <input
+            type="text"
+            formControlName="search"
+            (input)="onSearchInput()"
+            placeholder="Search for movies, cinemas..."
+            class="search-input"
+          />
+
+          @if (searchForm.get('search')?.value) {
+            <button
+              type="button"
+              (click)="clearSearch()"
+              class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          }
+        </form>
+
+        <!-- Autocomplete Dropdown -->
+        @if (searchDropdownOpen && searchForm.get('search')?.value) {
+          <div
+            class="absolute top-full left-0 right-0 mt-2 bg-gray-900 border border-gray-700 rounded-lg shadow-xl overflow-hidden z-50 max-h-96 overflow-y-auto"
+          >
+            <!-- Filter Tabs -->
+            <div class="flex border-b border-gray-700 bg-gray-800">
+              <button
+                type="button"
+                (click)="setSearchFilter('all')"
+                [class.active-filter]="searchFilter() === 'all'"
+                class="flex-1 px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-700"
+                [class.text-blue-400]="searchFilter() === 'all'"
+                [class.text-gray-400]="searchFilter() !== 'all'"
+              >
+                All
+              </button>
+              <button
+                type="button"
+                (click)="setSearchFilter('movies')"
+                [class.active-filter]="searchFilter() === 'movies'"
+                class="flex-1 px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-700"
+                [class.text-blue-400]="searchFilter() === 'movies'"
+                [class.text-gray-400]="searchFilter() !== 'movies'"
+              >
+                Movies
+              </button>
+              <button
+                type="button"
+                (click)="setSearchFilter('cinemas')"
+                [class.active-filter]="searchFilter() === 'cinemas'"
+                class="flex-1 px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-700"
+                [class.text-blue-400]="searchFilter() === 'cinemas'"
+                [class.text-gray-400]="searchFilter() !== 'cinemas'"
+              >
+                Cinemas
+              </button>
+            </div>
+
+            <!-- Results -->
+            @defer (when searchResults.value()) {
+              <div class="py-2">
+                @if (searchResults.isLoading()) {
+                  <!-- Loading State -->
+                  <div class="px-4 py-6 text-center text-gray-400">
+                    <div
+                      class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-gray-400 border-t-transparent mb-2"
+                    ></div>
+                    <p class="text-sm">Searching...</p>
+                  </div>
+                } @else if (searchResults.error()) {
+                  <!-- Error State -->
+                  <div class="px-4 py-4 text-center text-red-400">
+                    <svg
+                      class="w-6 h-6 mx-auto mb-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <p class="text-sm">Something went wrong</p>
+                  </div>
+                } @else {
+                  @defer (
+                    when searchResults.value().movies.length > 0 || searchResults.value().cinemas.length > 0
+                  ) {
+                    <!-- Movies Results -->
+                    @if (searchResults.value().movies && searchResults.value().movies.length > 0) {
+                      <div class="px-2">
+                        <div class="px-2 py-1 text-xs font-semibold text-gray-500 uppercase">
+                          Movies
+                        </div>
+                        @for (movie of searchResults.value().movies; track movie.id) {
+                          <button
+                            type="button"
+                            (click)="navigateToMovie(movie.id)"
+                            class="w-full text-left px-3 py-2 hover:bg-gray-800 rounded transition-colors flex items-center gap-3"
+                          >
+                            @if (movie.image_url) {
+                              <img
+                                [src]="movie.image_url"
+                                [alt]="movie.title"
+                                class="w-10 h-14 object-cover rounded"
+                              />
+                            }
+                            <div class="flex-1 min-w-0">
+                              <div class="text-white font-medium truncate">{{ movie.title }}</div>
+                              <div class="text-xs text-gray-400 truncate">
+                                {{ movie.genre.join(', ') }}
+                              </div>
+                            </div>
+                          </button>
+                        }
+                      </div>
+                    }
+
+                    <!-- Cinemas Results -->
+                    @if (
+                      searchResults.value().cinemas && searchResults.value().cinemas.length > 0
+                    ) {
+                      <div class="px-2" [class.mt-2]="searchResults.value().movies.length > 0">
+                        <div class="px-2 py-1 text-xs font-semibold text-gray-500 uppercase">
+                          Cinemas
+                        </div>
+                        @for (cinema of searchResults.value().cinemas; track cinema.id) {
+                          <button
+                            type="button"
+                            (click)="navigateToCinema(cinema.id)"
+                            class="w-full text-left px-3 py-2 hover:bg-gray-800 rounded transition-colors"
+                          >
+                            <div class="text-white font-medium">{{ cinema.name }}</div>
+                            <div class="text-xs text-gray-400">
+                              {{ cinema.city }} – {{ cinema.address }}
+                            </div>
+                          </button>
+                        }
+                      </div>
+                    }
+                  } @placeholder {
+                    <!-- Empty State -->
+                    <div class="px-4 py-6 text-center text-gray-400">
+                      <svg
+                        class="w-8 h-8 mx-auto mb-2 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                      <p class="text-sm">No results found</p>
+                      <p class="text-xs text-gray-500 mt-1">Try another keyword</p>
+                    </div>
+                  }
+                }
+              </div>
+            } @placeholder {
+              <!-- Initial Loading -->
+              <div class="px-4 py-4 text-center text-gray-500">
+                <div class="text-sm">Start typing to search...</div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!--  Tabs + Auth -->
+      <div class="flex items-center gap-8">
+        @if (isAuth()) {
+          <div class="flex items-center gap-6">
+            <a
+              [routerLink]="APP_ROUTES.explore"
+              class="cw-li-navbar"
+              routerLinkActive="active text-white"
+            >
+              <i class="bi bi-film"></i>
+              <span class="hidden lg:inline ml-1">Movies</span>
+            </a>
+
+            <a routerLink="/cinemas" class="cw-li-navbar" routerLinkActive="active text-white">
+              <i class="bi bi-building"></i>
+              <span class="hidden lg:inline ml-1">Cinemas</span>
+            </a>
+            <a
+              [routerLink]="APP_ROUTES.favorites"
+              class="cw-li-navbar"
+              routerLinkActive="active text-white"
+            >
+              <i class="bi bi-heart"></i>
+              <span class="hidden lg:inline ml-1"> Favorites</span>
+            </a>
+            <a
+              routerLink="/special-offers"
+              class="cw-li-navbar"
+              routerLinkActive="active text-white"
+            >
+              <i class="bi bi-gift-fill"></i>
+              <span class="hidden lg:inline ml-1"> Special Offers</span>
+            </a>
+          </div>
+          <div class="relative ml-auto">
+            <!-- Avatar button -->
+            <button class="flex items-center gap-2 focus:outline-none" (click)="toggleMenu()">
+              <img
+                [src]="user()?.profile_picture_url || '/assets/avatar.png'"
+                alt="User avatar"
+                class="w-10 h-10 rounded-full object-cover border border-gray-600"
+              />
+              <span class="hidden lg:block text-sm text-gray-200">
+                {{ user()?.full_name }}
+              </span>
+              <i class="bi bi-chevron-down text-xs"></i>
+            </button>
+
+            <!-- Dropdown -->
+            @if (menuOpen) {
+              <div
+                class="absolute left-0 mt-2 w-44 bg-gray-900 border border-gray-700 shadow-lg overflow-hidden z-50"
+              >
+                <button
+                  [routerLink]="APP_ROUTES.profile"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-400 hover:bg-gray-800"
+                >
+                  <i class="bi bi-person"></i>
+                  View Profile
+                </button>
+
+                @if (user() && user()!.is_admin) {
+                  <div class="border-t border-gray-700"></div>
+                  <button
+                    [routerLink]="'/admin/overview'"
+                    class="w-full text-left px-4 py-2 text-sm text-blue-400 hover:bg-gray-800"
+                  >
+                    <i class="bi bi-sliders"></i>
+                    Admin Dashboard
+                  </button>
+                }
+
+                <div class="border-t border-gray-700"></div>
+
+                <button
+                  class="w-full text-left px-4 py-2 text-sm text-gray-400 hover:bg-gray-800"
+                  (click)="logout()"
+                >
+                  <i class="bi bi-box-arrow-right"></i>
+                  Logout
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="flex items-center gap-2">
+            <button class="cw-btn-secondary" [routerLink]="['/' + APP_ROUTES.signup]">
+              Sign Up
+            </button>
+            <button class="cw-btn-primary" [routerLink]="['/' + APP_ROUTES.login]">Sign In</button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</nav>

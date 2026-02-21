@@ -1,0 +1,8 @@
+:host {
+  display: block;
+}
+
+.drag-over {
+  border-color: #3d99f5 !important;
+  background-color: rgba(61, 153, 245, 0.05);
+}

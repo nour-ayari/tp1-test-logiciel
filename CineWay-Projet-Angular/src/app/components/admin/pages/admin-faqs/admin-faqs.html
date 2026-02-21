@@ -1,0 +1,38 @@
+<div class="page-shell">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Admin · FAQs</p>
+      <h1 class="page-title">FAQ Management</h1>
+      <p class="page-subtitle">Create and manage frequently asked questions</p>
+    </div>
+    <app-primary-button label="Add New FAQ" [icon]="true" (clicked)="onAddNew()">
+      <svg
+        icon
+        class="h-5 w-5"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
+      </svg>
+    </app-primary-button>
+  </div>
+
+  <div class="section-surface">
+    @if (isLoading()) {
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Loading FAQs...</p>
+      </div>
+    } @else {
+      <app-admin-data-table
+        [columns]="tableColumns"
+        [data]="faqs()"
+        [actions]="tableActions"
+        (actionClicked)="onAction($event)"
+        emptyMessage="No FAQs found"
+      />
+    }
+  </div>
+</div>

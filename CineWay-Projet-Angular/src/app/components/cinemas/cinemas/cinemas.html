@@ -1,0 +1,51 @@
+<div class="container py-5">
+  <h2 class="my-4">Cinemas</h2>
+
+  <div class="d-flex align-items-center mb-4 gap-2">
+    <app-search-bar class="flex-grow-1"></app-search-bar>
+
+    <button
+      class="btn mx-2"
+      [class.btn-primary]="showFavoritesOnly()"
+      [class.btn-outline-primary]="!showFavoritesOnly()"
+      (click)="toggleFavoritesFilter()"
+    >
+      <i [class]="showFavoritesOnly() ?  'bi bi-x me-2' : 'bi bi-heart-fill me-2' "></i>
+      {{ showFavoritesOnly() ? 'Show all cinemas' : 'Show Favorites Only' }}
+    </button>
+  </div>
+
+  @if (error()) {
+    <div class="text-danger text-center">An error occurred while loading cinemas. Please try again later.</div>
+  }
+  @else {
+    <div class="row g-4">
+      @for (cinema of filteredCinemas(); track cinema.id) {
+        <div class="col-md-3">
+          <app-cinema-card [cinema]="cinema"></app-cinema-card>
+        </div>
+      }
+      @if (isLoading()) {
+        @for (i of [0,1,2,3]; track i) {
+          <div class="col-md-3">
+            <div
+              class="placeholder-glow bg-secondary text-white rounded h-100 p-4"
+              style="min-height: 200px"
+            >
+              <h3 class="placeholder col-8 mb-2"></h3>
+              <p class="placeholder col-6"></p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    @if (hasMore() && !isLoading() && !showFavoritesOnly()) {
+      <div class="d-flex justify-content-center my-4">
+        <button class="btn btn-outline-secondary" (click)="loadMore()">
+         <i class="bi bi-arrow-down me-2"></i> Load More
+        </button>
+      </div>
+    }
+  }
+</div>

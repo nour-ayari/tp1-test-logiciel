@@ -1,0 +1,92 @@
+@if (loading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+} @else if (!data() || data().length === 0) {
+  <div class="empty-state">
+    <p>No data available</p>
+  </div>
+} @else {
+  <div class="table-wrapper">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          @for (header of displayHeaders(); track header.key) {
+            <th [style.text-align]="header.align || 'left'" [style.width]="header.width">
+              {{ header.label }}
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of data(); track row.id) {
+          <tr>
+            @for (column of columns(); track column.key) {
+              <td [style.text-align]="column.align || 'left'">
+                {{ getColumnValue(row, column) }}
+              </td>
+            }
+            <td style="text-align: right">
+              <div class="action-buttons">
+                @for (action of actions(); track action.type) {
+                  <button
+                    class="action-btn"
+                    [class.edit]="action.type === 'edit'"
+                    [class.delete]="action.type === 'delete'"
+                    (click)="onAction(action.type, row)"
+                    [title]="action.label"
+                  >
+                    @if (action.type === 'edit') {
+                      <svg
+                        class="icon"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                    } @else if (action.type === 'delete') {
+                      <svg
+                        class="icon"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    } @else {
+                      <svg
+                        class="icon"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
+                      </svg>
+                    }
+                  </button>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

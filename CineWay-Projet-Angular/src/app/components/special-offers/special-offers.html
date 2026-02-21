@@ -1,0 +1,169 @@
+<div class="flex justify-center pt-24 pb-24">
+  <div class="w-full max-w-6xl">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1
+        class="text-4xl md:text-5xl font-bold mb-6 bg-linear-to-r from-green-400 to-blue-600 bg-clip-text text-transparent"
+      >
+        Special Offers
+      </h1>
+      <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+        Take advantage of our exclusive deals and save on movie tickets. Limited time offers
+        available now!
+      </p>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="flex flex-wrap justify-center gap-4 mb-12">
+      <button
+        (click)="filterOffers('all')"
+        [class.active]="selectedCategory === 'all'"
+        class="px-6 py-3 rounded-full font-medium transition-all duration-200 hover:scale-105"
+        [class]="
+          selectedCategory === 'all'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+        "
+      >
+        All Offers
+      </button>
+      <button
+        (click)="filterOffers('student')"
+        [class.active]="selectedCategory === 'student'"
+        class="px-6 py-3 rounded-full font-medium transition-all duration-200 hover:scale-105"
+        [class]="
+          selectedCategory === 'student'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+        "
+      >
+        Student
+      </button>
+      <button
+        (click)="filterOffers('family')"
+        [class.active]="selectedCategory === 'family'"
+        class="px-6 py-3 rounded-full font-medium transition-all duration-200 hover:scale-105"
+        [class]="
+          selectedCategory === 'family'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+        "
+      >
+        Family
+      </button>
+      <button
+        (click)="filterOffers('seasonal')"
+        [class.active]="selectedCategory === 'seasonal'"
+        class="px-6 py-3 rounded-full font-medium transition-all duration-200 hover:scale-105"
+        [class]="
+          selectedCategory === 'seasonal'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+        "
+      >
+        Seasonal
+      </button>
+    </div>
+
+    <!-- Offers Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+      @for (offer of filteredOffers; track offer.id) {
+        <div
+          class="bg-gray-850 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:transform hover:scale-105"
+        >
+          <!-- Offer Image -->
+          <div
+            class="h-48 bg-linear-to-br from-gray-700 to-gray-800 flex items-center justify-center"
+          >
+            <div class="text-6xl opacity-50">
+              @if (offer.category === 'student') {
+                🎓
+              } @else if (offer.category === 'family') {
+                👨‍👩‍👧‍👦
+              } @else {
+                🎄
+              }
+            </div>
+          </div>
+
+          <!-- Offer Content -->
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <span
+                class="px-3 py-1 rounded-full text-xs font-medium {{
+                  getCategoryColor(offer.category)
+                }} text-white"
+              >
+                {{ getCategoryLabel(offer.category) }}
+              </span>
+              @if (!offer.isActive) {
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-red-600 text-white">
+                  Expired
+                </span>
+              }
+            </div>
+
+            <h3 class="text-xl font-semibold mb-2">{{ offer.title }}</h3>
+            <p class="text-gray-300 mb-4">{{ offer.description }}</p>
+
+            <div class="text-2xl font-bold text-green-400 mb-4">{{ offer.discount }}</div>
+
+            <div class="text-sm text-gray-400 mb-4">
+              <strong>Valid until:</strong> {{ offer.validUntil }}
+            </div>
+
+            <!-- Terms -->
+            <div class="mb-6">
+              <h4 class="text-sm font-semibold text-gray-300 mb-2">Terms & Conditions:</h4>
+              <ul class="text-xs text-gray-400 space-y-1">
+                @for (term of offer.terms; track term) {
+                  <li>• {{ term }}</li>
+                }
+              </ul>
+            </div>
+
+            <!-- CTA Button -->
+            @if (offer.isActive) {
+              <button
+                routerLink="/explore"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+              >
+                Book Now
+              </button>
+            } @else {
+              <button
+                disabled
+                class="w-full bg-gray-600 text-gray-400 font-medium py-3 px-6 rounded-lg cursor-not-allowed"
+              >
+                Expired
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Newsletter Signup -->
+    <div
+      class="bg-linear-to-r from-blue-600/10 to-purple-600/10 rounded-xl p-8 border border-gray-700 text-center"
+    >
+      <h2 class="text-2xl font-semibold mb-4">Never Miss an Offer!</h2>
+      <p class="text-gray-300 mb-6">
+        Subscribe to our newsletter and be the first to know about exclusive deals and special
+        promotions.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+        <input
+          type="email"
+          placeholder="Enter your email"
+          class="flex-1 px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+        />
+        <button
+          class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+        >
+          Subscribe
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

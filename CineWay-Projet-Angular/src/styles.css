@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import './cineway-tailwind.css';
+
+/* Make footer stick to bottom */
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.text-muted {
+  color: #ced2d5 !important;
+}

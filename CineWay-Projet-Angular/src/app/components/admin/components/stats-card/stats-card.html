@@ -1,0 +1,20 @@
+<div class="bg-[#18222c] border border-[#2a3644] rounded-xl p-6 hover:border-[#3d99f5] hover:shadow-lg hover:shadow-[#3d99f5]/10 transition-all duration-200">
+  <div class="flex items-start justify-between gap-4">
+    <div>
+      <p class="text-gray-400 text-sm mb-2 font-medium">{{ title() }}</p>
+      <p class="text-3xl font-bold text-white leading-tight">{{ value() }}</p>
+    </div>
+    <div class="w-12 h-12 rounded-lg flex items-center justify-center" [class]="iconBg()">
+      <svg
+        class="w-7 h-7"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        [class]="iconColor()"
+        viewBox="0 0 24 24"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="iconPath()" />
+      </svg>
+    </div>
+  </div>
+</div>

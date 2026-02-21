@@ -1,0 +1,495 @@
+<div class="min-h-screen bg-background-dark transition-colors">
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Hero Section -->
+    @if (!showSearchPanel) {
+      <section
+        class="relative rounded-lg overflow-hidden mb-8 group"
+        role="region"
+        aria-label="Featured movie banner"
+      >
+        <div class="h-64 sm:h-80 md:h-96 w-full relative">
+          <img
+            [src]="featuredMovie?.image_url || 'https://via.placeholder.com/1200x500'"
+            [alt]="'Featured movie ' + (featuredMovie?.title || 'promotional banner')"
+            class="w-full h-full object-cover object-center"
+            loading="lazy"
+          />
+          <div class="absolute inset-0 hero-gradient-overlay" aria-hidden="true"></div>
+        </div>
+
+        <div class="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 md:p-10 z-10">
+          <div class="max-w-2xl">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-3 text-white">
+              {{ featuredMovie?.title || 'CineWay' }}
+            </h1>
+            <p class="text-sm sm:text-base text-gray-300 mb-4 line-clamp-2">
+              {{
+                featuredMovie?.description ||
+                  'Discover amazing movies and book your tickets online.'
+              }}
+            </p>
+            <button
+              [routerLink]="['/movies', featuredMovie?.id]"
+              [attr.aria-label]="'Get tickets for ' + (featuredMovie?.title || 'featured movie')"
+              class="inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold py-2 px-5 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-950"
+            >
+              <span class="material-icons-outlined text-lg">confirmation_number</span>
+              <span>Get Tickets</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- Search Section -->
+    <section class="mb-8" role="search" aria-label="Movie and cinema search">
+      <div class="max-w-2xl mx-auto">
+        <!-- Search Input -->
+        <div class="relative mb-6">
+          <span
+            class="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            aria-hidden="true"
+            >search</span
+          >
+          <input
+            [(ngModel)]="searchQuery"
+            (input)="onSearchInput()"
+            (focus)="onSearchFocus()"
+            (blur)="onSearchBlur()"
+            (keyup.enter)="onSearchSubmit()"
+            aria-label="Search for movies and cinemas"
+            type="text"
+            placeholder="Search for movies, cinemas..."
+            class="w-full bg-surface-dark border-2 border-gray-700 rounded-lg py-3 pl-12 pr-28 text-base placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 focus:outline-none text-text-dark-primary"
+          />
+
+          <!-- Clear Button -->
+          @if (searchQuery.trim()) {
+            <button
+              (click)="clearSearch()"
+              aria-label="Clear search"
+              class="absolute right-24 sm:right-28 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200 transition-colors duration-200 p-2 -m-2 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full"
+            >
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          }
+
+          <!-- Search Button -->
+          <button
+            (click)="onSearchSubmit()"
+            [disabled]="!searchQuery.trim()"
+            aria-label="Submit search"
+            class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-950"
+          >
+            Search
+          </button>
+        </div>
+
+        <!-- Filter Tabs -->
+        @if (showSearchResults) {
+          <div
+            class="flex items-center justify-center gap-2 sm:gap-4 flex-wrap"
+            role="tablist"
+            aria-label="Search filters"
+          >
+            <button
+              (click)="setFilter('all')"
+              [attr.aria-selected]="activeFilter === 'all'"
+              role="tab"
+              class="px-6 sm:px-8 py-2.5 rounded-lg text-sm font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-950"
+              [class]="
+                activeFilter === 'all'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-surface-dark text-text-dark-secondary hover:bg-gray-700'
+              "
+            >
+              All
+            </button>
+            <button
+              (click)="setFilter('movies')"
+              [attr.aria-selected]="activeFilter === 'movies'"
+              role="tab"
+              class="px-6 sm:px-8 py-2.5 rounded-lg text-sm font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-950"
+              [class]="
+                activeFilter === 'movies'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-surface-dark text-text-dark-secondary hover:bg-gray-700'
+              "
+            >
+              Movies
+            </button>
+            <button
+              (click)="setFilter('cinemas')"
+              [attr.aria-selected]="activeFilter === 'cinemas'"
+              role="tab"
+              class="px-6 sm:px-8 py-2.5 rounded-lg text-sm font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-950"
+              [class]="
+                activeFilter === 'cinemas'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-surface-dark text-text-dark-secondary hover:bg-gray-700'
+              "
+            >
+              Cinemas
+            </button>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Search Panel Section -->
+    @if (showSearchPanel && !showSearchResults) {
+      <section
+        class="max-w-2xl mx-auto mb-8 bg-surface-dark rounded-lg border border-gray-700 p-4 relative z-50"
+      >
+        <!-- Recent Searches Section in Panel -->
+        @if (recentSearches.length > 0) {
+          <div role="region" aria-label="Recent searches">
+            <h3
+              class="text-xs font-bold uppercase tracking-wider text-text-dark-secondary mb-3 px-2"
+            >
+              Recent Searches
+            </h3>
+            <div class="space-y-2">
+              @for (search of recentSearches; track trackByIndex($index)) {
+                <button
+                  (click)="selectRecentSearch(search)"
+                  [attr.aria-label]="'Search for ' + search.query"
+                  class="w-full flex items-center justify-between group rounded-lg p-3 hover:bg-gray-800 transition-colors duration-200 text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <div class="flex items-center space-x-3 flex-1">
+                    <span
+                      class="material-symbols-outlined text-text-dark-secondary shrink-0 text-sm"
+                      >history</span
+                    >
+                    <span class="text-text-dark-primary text-sm">{{ search.query }}</span>
+                  </div>
+                  <button
+                    (click)="removeRecentSearch($index); $event.stopPropagation()"
+                    [attr.aria-label]="'Remove ' + search.query + ' from search history'"
+                    class="text-gray-500 hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 -m-1 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                  >
+                    <span class="material-symbols-outlined text-sm">close</span>
+                  </button>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </section>
+    }
+    @if (showSearchResults) {
+      <section class="mb-12 max-w-6xl mx-auto" role="region" aria-label="Search results" [@fadeIn]>
+        <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-text-dark-primary">
+          Search Results
+          @if (!isSearching) {
+            <span
+              class="text-base sm:text-lg text-text-light-secondary dark:text-text-dark-secondary font-normal"
+              >({{ searchResults.length }})</span
+            >
+          }
+        </h2>
+
+        @if (isSearching) {
+          <div
+            class="flex flex-col items-center justify-center py-12"
+            role="status"
+            aria-live="polite"
+          >
+            <div
+              class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent mb-4"
+            ></div>
+            <p class="text-text-light-secondary dark:text-text-dark-secondary">Searching...</p>
+          </div>
+        } @else if (searchResults.length === 0) {
+          <div class="flex flex-col items-center justify-center py-12 text-center" role="status">
+            <span
+              class="material-symbols-outlined text-6xl text-text-light-secondary dark:text-text-dark-secondary mb-4"
+              >search_off</span
+            >
+            <p class="text-text-light-secondary dark:text-text-dark-secondary">
+              No results found for "<span class="font-semibold">{{ searchQuery }}</span
+              >"
+            </p>
+            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-2">
+              Try different keywords or browse our collections below
+            </p>
+          </div>
+        } @else {
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+            @for (movie of searchResults; track trackByMovieId($index, movie)) {
+              <button
+                [routerLink]="['/movies', movie.id]"
+                [attr.aria-label]="'View ' + movie.title + ' details'"
+                class="group cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark rounded-lg transition-all duration-200"
+              >
+                <div
+                  class="aspect-2/3 rounded-lg overflow-hidden mb-3 bg-surface-light dark:bg-surface-dark relative"
+                >
+                  <img
+                    [src]="movie.image_url"
+                    [alt]="movie.title + ' movie poster'"
+                    loading="lazy"
+                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <!-- Favorite Heart Icon -->
+                  <button
+                    (click)="toggleFavorite(movie, $event)"
+                    class="favorite-btn absolute top-2 right-2 focus:outline-none focus:ring-2 focus:ring-white"
+                    [class.active]="isFavorite(movie.id)"
+                    [attr.aria-label]="'Toggle favorite for ' + movie.title"
+                  >
+                    <i [class]="isFavorite(movie.id) ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+                  </button>
+                </div>
+                <h3
+                  class="font-semibold text-sm sm:text-base text-text-light-primary dark:text-text-dark-primary truncate group-hover:text-primary transition-colors"
+                >
+                  {{ movie.title }}
+                </h3>
+                <p
+                  class="text-xs sm:text-sm text-text-light-secondary dark:text-text-dark-secondary"
+                >
+                  {{ movie.genre[0] || 'Movie' }}
+                </p>
+              </button>
+            }
+          </div>
+        }
+      </section>
+    }
+
+    <!-- Main Content Area -->
+    @if (!showSearchResults) {
+      <div class="space-y-12">
+        <!-- Recent Searches Section (Main Page) - Only show if panel is NOT visible -->
+        @if (recentSearches.length > 0 && !showSearchPanel) {
+          <section class="max-w-4xl mx-auto" role="region" aria-label="Recent searches">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-text-dark-primary">
+              Recent Searches
+            </h2>
+            <div class="space-y-4">
+              @for (search of recentSearches; track trackByIndex($index)) {
+                <div
+                  class="flex items-center justify-between group rounded-lg p-3 hover:bg-surface-light dark:hover:bg-surface-dark transition-colors duration-200"
+                >
+                  <button
+                    (click)="selectRecentSearch(search)"
+                    [attr.aria-label]="'Search for ' + search.query"
+                    class="flex items-center space-x-4 flex-1 text-left focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1"
+                  >
+                    <span
+                      class="material-symbols-outlined text-text-light-secondary dark:text-text-dark-secondary shrink-0"
+                      >history</span
+                    >
+                    <span
+                      class="text-text-light-primary dark:text-text-dark-primary hover:text-primary transition-colors"
+                      >{{ search.query }}</span
+                    >
+                  </button>
+                  <button
+                    (click)="removeRecentSearch($index)"
+                    [attr.aria-label]="'Remove ' + search.query + ' from search history'"
+                    class="text-text-light-secondary dark:text-text-dark-secondary hover:text-text-light-primary dark:hover:text-text-dark-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-2 -m-2 focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                  >
+                    <span class="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+              }
+            </div>
+          </section>
+        }
+
+        <!-- Trending Now Section -->
+        <section class="max-w-6xl mx-auto" role="region" aria-label="Trending movies">
+          <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <h2 class="text-2xl sm:text-3xl font-bold text-text-dark-primary">Trending Now</h2>
+            <button
+              (click)="onSeeAllTrending()"
+              class="text-primary hover:text-primary-600 font-medium flex items-center space-x-1 cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary rounded px-3 py-1"
+            >
+              <span>See All</span>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+            @for (movie of trendingMovies; track trackByMovieId($index, movie)) {
+              <button
+                [routerLink]="['/movies', movie.id]"
+                [attr.aria-label]="'View ' + movie.title + ' details'"
+                class="group cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark rounded-lg transition-all duration-200"
+              >
+                <div
+                  class="aspect-2/3 rounded-lg overflow-hidden mb-3 bg-surface-light dark:bg-surface-dark relative"
+                >
+                  <img
+                    [src]="movie.image_url"
+                    [alt]="movie.title + ' movie poster'"
+                    loading="lazy"
+                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <!-- Favorite Heart Icon -->
+                  <button
+                    (click)="toggleFavorite(movie, $event)"
+                    class="favorite-btn absolute top-2 right-2 focus:outline-none focus:ring-2 focus:ring-white"
+                    [class.active]="isFavorite(movie.id)"
+                    [attr.aria-label]="
+                      (isFavorite(movie.id) ? 'Remove from' : 'Add to') + ' favorites'
+                    "
+                  >
+                    <i [class]="isFavorite(movie.id) ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+                  </button>
+                </div>
+                <h3
+                  class="font-semibold text-sm sm:text-base text-text-light-primary dark:text-text-dark-primary truncate group-hover:text-primary transition-colors"
+                >
+                  {{ movie.title }}
+                </h3>
+                <p
+                  class="text-xs sm:text-sm text-text-light-secondary dark:text-text-dark-secondary"
+                >
+                  {{ movie.genre[0] || 'Movie' }}
+                </p>
+              </button>
+            }
+          </div>
+        </section>
+
+        <!-- Now Showing Section -->
+        <section class="max-w-6xl mx-auto" role="region" aria-label="Movies now showing">
+          <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <h2 class="text-2xl sm:text-3xl font-bold text-text-dark-primary">Now Showing</h2>
+            <button
+              (click)="onSeeAllNowShowing()"
+              class="text-primary hover:text-primary-600 font-medium flex items-center space-x-1 cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary rounded px-3 py-1"
+            >
+              <span>See All</span>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+
+          @if (isLoadingMovies$ | async) {
+            <div class="flex items-center justify-center py-12" role="status" aria-live="polite">
+              <div
+                class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent"
+              ></div>
+            </div>
+          } @else if (nowShowingMovies.length === 0) {
+            <div class="text-center py-12 text-text-light-secondary dark:text-text-dark-secondary">
+              No movies currently showing. Check back soon!
+            </div>
+          } @else {
+            <div
+              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6"
+            >
+              @for (movie of nowShowingMovies; track trackByMovieId($index, movie)) {
+                <button
+                  [routerLink]="['/movies', movie.id]"
+                  [attr.aria-label]="'View ' + movie.title + ' details'"
+                  class="group cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark rounded-lg transition-all duration-200"
+                >
+                  <div
+                    class="aspect-2/3 rounded-lg overflow-hidden mb-3 bg-surface-light dark:bg-surface-dark relative"
+                  >
+                    <img
+                      [src]="movie.image_url"
+                      [alt]="movie.title + ' movie poster'"
+                      loading="lazy"
+                      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <!-- Favorite Heart Icon -->
+                    <button
+                      (click)="toggleFavorite(movie, $event)"
+                      class="favorite-btn absolute top-2 right-2 focus:outline-none focus:ring-2 focus:ring-white"
+                      [class.active]="isFavorite(movie.id)"
+                      [attr.aria-label]="
+                        (isFavorite(movie.id) ? 'Remove from' : 'Add to') + ' favorites'
+                      "
+                    >
+                      <i [class]="isFavorite(movie.id) ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+                    </button>
+                  </div>
+                  <h3
+                    class="font-semibold text-base sm:text-lg text-text-light-primary dark:text-text-dark-primary truncate group-hover:text-primary transition-colors"
+                  >
+                    {{ movie.title }}
+                  </h3>
+                  <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                    {{ movie.genre[0] || 'Movie' }}
+                  </p>
+                </button>
+              }
+            </div>
+          }
+        </section>
+
+        <!-- Coming Soon Section -->
+        <section class="max-w-6xl mx-auto" role="region" aria-label="Movies coming soon">
+          <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <h2 class="text-2xl sm:text-3xl font-bold text-text-dark-primary">Coming Soon</h2>
+            <button
+              (click)="onSeeAllComingSoon()"
+              class="text-primary hover:text-primary-600 font-medium flex items-center space-x-1 cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary rounded px-3 py-1"
+            >
+              <span>See All</span>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+
+          @if (isLoadingMovies$ | async) {
+            <div class="flex items-center justify-center py-12" role="status" aria-live="polite">
+              <div
+                class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent"
+              ></div>
+            </div>
+          } @else if (comingSoonMovies.length === 0) {
+            <div class="text-center py-12 text-text-light-secondary dark:text-text-dark-secondary">
+              No upcoming movies scheduled. Check back soon!
+            </div>
+          } @else {
+            <div
+              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6"
+            >
+              @for (movie of comingSoonMovies; track trackByMovieId($index, movie)) {
+                <button
+                  [routerLink]="['/movies', movie.id]"
+                  [attr.aria-label]="'View ' + movie.title + ' details'"
+                  class="group cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark rounded-lg transition-all duration-200"
+                >
+                  <div
+                    class="aspect-2/3 rounded-lg overflow-hidden mb-3 bg-surface-light dark:bg-surface-dark relative"
+                  >
+                    <img
+                      [src]="movie.image_url"
+                      [alt]="movie.title + ' movie poster'"
+                      loading="lazy"
+                      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <!-- Favorite Heart Icon -->
+                    <button
+                      (click)="toggleFavorite(movie, $event)"
+                      class="favorite-btn absolute top-2 right-2 focus:outline-none focus:ring-2 focus:ring-white"
+                      [class.active]="isFavorite(movie.id)"
+                      [attr.aria-label]="
+                        (isFavorite(movie.id) ? 'Remove from' : 'Add to') + ' favorites'
+                      "
+                    >
+                      <i [class]="isFavorite(movie.id) ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+                    </button>
+                  </div>
+                  <h3
+                    class="font-semibold text-base sm:text-lg text-text-light-primary dark:text-text-dark-primary truncate group-hover:text-primary transition-colors"
+                  >
+                    {{ movie.title }}
+                  </h3>
+                  <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                    {{ movie.genre[0] || 'Movie' }}
+                  </p>
+                </button>
+              }
+            </div>
+          }
+        </section>
+      </div>
+    }
+  </main>
+</div>

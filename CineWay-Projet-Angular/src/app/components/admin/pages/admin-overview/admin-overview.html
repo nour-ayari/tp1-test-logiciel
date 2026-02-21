@@ -1,0 +1,141 @@
+<div class="page-shell">
+  <!-- Page header -->
+  <div class="page-header">
+    <h1 class="page-title">Dashboard Overview</h1>
+    <p class="page-subtitle">Live status of movies, cinemas, bookings, and users.</p>
+  </div>
+
+  <div class="section-surface stats-block">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <app-stats-card
+        title="Total Movies"
+        [value]="totalMovies"
+        iconPath="M4 4h2l2 4h6l2-4h2l-2 4h2v12H4V8h2L4 4zm4 6v6m4-6v6m4-6v6"
+        iconBg="bg-[#3d99f5]/15"
+        iconColor="text-[#3d99f5]"
+      ></app-stats-card>
+
+      <app-stats-card
+        title="Total Cinemas"
+        [value]="totalCinemas"
+        iconPath="M4 20h16V6H4v14zm3-2v-4h2v4H7zm4 0v-6h2v6h-2zm4 0v-8h2v8h-2zM6 6l6-4 6 4H6z"
+        iconBg="bg-emerald-500/15"
+        iconColor="text-emerald-400"
+      ></app-stats-card>
+
+      <app-stats-card
+        title="Recent Bookings"
+        [value]="recentBookings"
+        iconPath="M4 7h16v10a2 2 0 01-2 2H6a2 2 0 01-2-2V7zm0-2a2 2 0 012-2h12a2 2 0 012 2v2H4V5zm3 6h4m-4 3h6"
+        iconBg="bg-purple-500/15"
+        iconColor="text-purple-400"
+      ></app-stats-card>
+
+      <app-stats-card
+        title="Total Users"
+        [value]="totalUsers"
+        iconPath="M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H5z"
+        iconBg="bg-amber-500/15"
+        iconColor="text-amber-400"
+      ></app-stats-card>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert-error">
+    {{ error }}
+  </div>
+
+  <div class="section-surface" *ngIf="!error">
+    <div class="section-header">
+      <h2 class="section-title">Recent bookings</h2>
+      <p class="section-subtitle">Last 10 bookings from the past 7 days.</p>
+    </div>
+
+    <div class="overflow-x-auto rounded-2xl border border-white/10 bg-white/5">
+      <table class="min-w-full text-left text-sm">
+        <thead class="text-xs uppercase tracking-wider text-white/70">
+          <tr class="border-b border-white/10">
+            <th class="px-4 py-3">Ticket</th>
+            <th class="px-4 py-3">User</th>
+            <th class="px-4 py-3">Screening</th>
+            <th class="px-4 py-3">Seat</th>
+            <th class="px-4 py-3">Price</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3">Booked at</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-white/10">
+          <tr *ngIf="loading">
+            <td class="px-4 py-4 text-white/70" colspan="7">Loading bookings…</td>
+          </tr>
+
+          <tr *ngIf="!loading && recentBookingsList.length === 0">
+            <td class="px-4 py-4 text-white/70" colspan="7">No recent bookings found.</td>
+          </tr>
+
+          <tr *ngFor="let b of recentBookingsList">
+            <td class="px-4 py-3 font-medium text-white/90">#{{ b.id }}</td>
+            <td class="px-4 py-3 text-white/80">#{{ b.user_id }}</td>
+            <td class="px-4 py-3 text-white/80">#{{ b.screening_id }}</td>
+            <td class="px-4 py-3 text-white/80">
+              {{ b.seat_id ?? '—' }}
+            </td>
+            <td class="px-4 py-3 text-white/80">
+              {{ b.price | number : '1.2-2' }}
+            </td>
+            <td class="px-4 py-3">
+              <span
+                class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold"
+                [ngClass]="
+                  b.status === 'confirmed'
+                    ? 'bg-emerald-500/15 text-emerald-300'
+                    : b.status === 'cancelled'
+                      ? 'bg-rose-500/15 text-rose-300'
+                      : 'bg-amber-500/15 text-amber-300'
+                "
+              >
+                {{ b.status }}
+              </span>
+            </td>
+            <td class="px-4 py-3 text-white/80">
+              {{ b.booked_at | date : 'medium' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-surface">
+    <div class="section-header">
+      <h2 class="section-title">Quick Navigation</h2>
+      <p class="section-subtitle">Jump into management areas instantly.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <app-quick-nav-card
+        title="Movie Management"
+        description="Add, edit, and manage movie listings and details."
+        linkText="Go to Movies"
+        linkRoute="/admin/movies"
+        icon="M3 4.5h18M3 9.5h18M7 4.5v15m5-15v15m5-15v15"
+      ></app-quick-nav-card>
+
+      <app-quick-nav-card
+        title="Cinema Management"
+        description="Manage cinema locations, screens, and showtimes."
+        linkText="Go to Cinemas"
+        linkRoute="/admin/cinemas"
+        icon="M4 20h16V8H4v12zm2-2v-4h4v4H6zm6 0v-6h6v6h-6zM4 8l8-5 8 5H4z"
+      ></app-quick-nav-card>
+
+      <app-quick-nav-card
+        title="User Management"
+        description="View and manage all registered users on the platform."
+        linkText="Go to Users"
+        linkRoute="/admin/users"
+        icon="M12 11a4 4 0 100-8 4 4 0 000 8zm-6 9a6 6 0 1112 0H6z"
+      ></app-quick-nav-card>
+    </div>
+  </div>
+</div>

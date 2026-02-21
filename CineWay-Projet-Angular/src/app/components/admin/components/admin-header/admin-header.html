@@ -1,0 +1,56 @@
+<header class="fixed top-0 left-0 right-0 h-16 bg-[#101922] border-b border-border-dark z-40">
+  <div class="h-full px-6 flex items-center justify-between">
+    <a
+      (click)="navigateToHome()"
+      class="flex items-center gap-2 no-underline"
+      style="text-decoration: none"
+    >
+      <img
+        src="https://img.icons8.com/?size=100&id=111180&format=png&color=228BE6"
+        class="h-7"
+        alt="CineWay Logo"
+      />
+      <span class="text-xl font-semibold text-white no-underline">CineWay</span>
+    </a>
+    <div class="flex items-center gap-8">
+      <div class="relative">
+        <button
+          class="flex items-center gap-2 focus:outline-none hover:bg-[#18222c] px-3 py-2 rounded-lg transition-colors"
+          (click)="toggleMenu()"
+        >
+          <img
+            [src]="
+              user() && user()!.profile_picture_url
+                ? user()!.profile_picture_url
+                : '/assets/avatar.png'
+            "
+            alt="User avatar"
+            class="w-8 h-8 rounded-full object-cover border border-border-dark"
+          />
+          <span class="hidden sm:block text-sm text-gray-200">
+            {{ user() && user()!.full_name }}
+          </span>
+        </button>
+
+        @if (menuOpen) {
+          <div
+            class="absolute right-0 mt-2 w-48 bg-[#18222c] border border-border-dark rounded-lg shadow-xl shadow-black/20 py-2"
+          >
+            <button
+              class="w-full text-left px-4 py-2 text-gray-300 hover:bg-[#101922] hover:text-[#3d99f5] transition-colors"
+            >
+              Profile Settings
+            </button>
+            <hr class="border-border-dark my-2" />
+            <button
+              class="w-full text-left px-4 py-2 text-gray-300 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+              (click)="logout()"
+            >
+              Logout
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</header>

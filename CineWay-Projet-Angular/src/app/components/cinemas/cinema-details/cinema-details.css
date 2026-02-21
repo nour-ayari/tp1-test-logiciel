@@ -1,0 +1,66 @@
+.cinema-title {
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  letter-spacing: 1.2px;
+  line-height: 1.1;
+  font-weight: 800;
+  text-transform: uppercase;
+  animation: fadeSlideIn 0.8s ease-out forwards;
+  opacity: 1;
+}
+
+.amenities-slider {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+}
+
+.amenities-slider .slider-track {
+  display: flex;
+  gap: 1.5rem;
+  animation: scrollInfinite 20s linear infinite;
+}
+
+.amenity-card {
+  flex: 0 0 auto;
+  min-width: 25px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  font-size: 1.1rem;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1.2rem;
+  transition: transform 1s ease, background 1s ease;
+}
+
+.amenity-card i {
+  font-size: 2rem;
+}
+
+.amenity-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@keyframes scrollInfinite {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.blur-bg {
+  filter: blur(5px);
+  transition: filter 0.3s;
+}

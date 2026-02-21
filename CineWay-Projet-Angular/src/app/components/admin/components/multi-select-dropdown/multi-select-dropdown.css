@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+button.error {
+  border-color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+button:focus.error {
+  border-color: #ef4444;
+}

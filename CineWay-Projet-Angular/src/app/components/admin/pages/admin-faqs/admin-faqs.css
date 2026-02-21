@@ -1,0 +1,86 @@
+:host {
+  display: block;
+  background:
+    radial-gradient(circle at 18% 15%, rgba(61, 153, 245, 0.08), transparent 32%),
+    radial-gradient(circle at 82% 10%, rgba(117, 73, 248, 0.06), transparent 30%), #0b1220;
+  min-height: 100vh;
+  color: #e9eef5;
+}
+
+/* Align layout with Movies/Cinemas pages */
+.page-shell {
+  width: 100%;
+  padding: 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.page-header {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 800;
+  color: #f3f7fb;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  margin: 0.35rem 0 0;
+  color: #9ab6d8;
+  font-size: 1.05rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #6ea7ff;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.section-surface {
+  background: #1f2937;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #9ca3af;
+}
+
+.loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid #374151;
+  border-top: 2px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

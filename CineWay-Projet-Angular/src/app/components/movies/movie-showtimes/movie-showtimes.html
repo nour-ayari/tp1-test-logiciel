@@ -1,0 +1,124 @@
+<div class="min-h-screen bg-bg-very-dark text-white">
+  <main class="flex-1 px-6 md:px-10 py-8 md:py-12 max-w-7xl mx-auto">
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="flex items-center justify-center py-20">
+        <div
+          class="h-12 w-12 animate-spin rounded-full border-4 border-border-dark border-t-primary"
+        ></div>
+      </div>
+    }
+    <!-- Error State -->
+    @else if (error()) {
+      <div class="flex flex-col items-center justify-center py-20">
+        <div class="text-red-400 text-lg mb-4">{{ error() }}</div>
+        <button
+          (click)="goBack()"
+          class="px-6 py-2 bg-primary hover:bg-primary-600 rounded-lg transition-colors"
+        >
+          Go Back
+        </button>
+      </div>
+    }
+    <!-- Content -->
+    @else {
+      <!-- Header -->
+      <div class="flex items-center gap-3 mb-6">
+        <button
+          (click)="goBack()"
+          class="flex items-center justify-center w-8 h-8 rounded-full hover:bg-white/10 transition-colors text-gray-300"
+        >
+          <span class="bi bi-arrow-left text-xl"></span>
+        </button>
+        <h1 class="text-2xl md:text-3xl font-bold leading-tight tracking-[-0.015em]">
+          {{ movie()?.title || 'Movie' }} - Showtimes
+        </h1>
+      </div>
+
+      @if (showtimes().length === 0) {
+        <div class="text-center py-20">
+          <p class="text-gray-400 text-lg">No showtimes available for this movie.</p>
+        </div>
+      } @else {
+        <!-- Date Selection -->
+        <div class="mb-8">
+          <h2 class="text-lg font-semibold mb-4">Select Date</h2>
+          <div class="flex flex-wrap gap-4 pb-2">
+            @for (date of availableDates(); track date) {
+              <button
+                (click)="selectDate(date)"
+                [class.bg-primary]="selectedDate() === date"
+                [class.bg-bg-dark]="selectedDate() !== date"
+                [class.opacity-50]="!datesWithShowtimes().has(date)"
+                [class.cursor-not-allowed]="!datesWithShowtimes().has(date)"
+                class="shrink-0 px-6 py-4 rounded-lg transition-colors hover:bg-primary-600 min-w-32 relative"
+              >
+                <div class="text-center">
+                  @if (isToday(date)) {
+                    <div class="text-lg font-semibold">Today</div>
+                  } @else if (isTomorrow(date)) {
+                    <div class="text-lg font-semibold">Tomorrow</div>
+                  }
+                  <div class="text-lg" [class.font-semibold]="!isToday(date) && !isTomorrow(date)">
+                    {{ date | showtimeDate: 'short' }}
+                  </div>
+                  @if (!datesWithShowtimes().has(date)) {
+                    <div class="text-xs text-gray-500 mt-1">No showtimes</div>
+                  }
+                </div>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Showtimes by Cinema -->
+        <div class="space-y-6">
+          @for (group of getGroupedShowtimesForSelectedDate(); track group.cinema.id) {
+            <div class="bg-bg-dark rounded-xl p-6">
+              <!-- Cinema Info -->
+              <div class="mb-4 pb-4 border-b border-white/10">
+                <h3 class="text-xl font-bold mb-2">{{ group.cinema.name }}</h3>
+                <p class="text-gray-400 text-sm">
+                  <span class="bi bi-geo-alt-fill mr-1"></span>
+                  {{ group.cinema.address }}, {{ group.cinema.city }}
+                </p>
+                @if (group.cinema.amenities && group.cinema.amenities.length > 0) {
+                  <div class="flex gap-2 mt-2 flex-wrap">
+                    @for (amenity of group.cinema.amenities; track amenity) {
+                      <span class="text-xs px-2 py-1 bg-white/10 rounded-full">
+                        {{ amenity }}
+                      </span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- Showtimes Grid -->
+              <div>
+                <h4 class="text-sm font-semibold text-gray-300 mb-3">Available Times</h4>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                  @for (showtime of group.showtimes; track showtime.id) {
+                    <button
+                      (click)="selectShowtime(showtime.id)"
+                      class="flex flex-col items-center justify-center p-4 bg-bg-medium-dark hover:bg-primary rounded-lg transition-colors group"
+                    >
+                      <span class="text-lg font-bold group-hover:text-white">
+                        {{ showtime.screening_time | showtimeDate: 'time' }}
+                      </span>
+                      <span class="text-xs text-gray-400 group-hover:text-white/80 mt-1">
+                        {{ showtime.room.name }}
+                      </span>
+                      <span class="text-xs text-gray-500 group-hover:text-white/60 mt-1">
+                        ${{ showtime.price.toFixed(2) }}
+                      </span>
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  </main>
+</div>

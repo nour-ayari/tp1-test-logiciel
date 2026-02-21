@@ -1,0 +1,61 @@
+<div class="page-shell">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Admin · Showtimes</p>
+      <h1 class="page-title">Showtime Management</h1>
+      <p class="page-subtitle">Schedule and manage movie screenings across all cinemas.</p>
+    </div>
+    <app-primary-button [label]="'Add Showtime'" (clicked)="onAddShowtime()"></app-primary-button>
+  </div>
+
+  @if (loading()) {
+    <div class="section-surface loading-surface">
+      <div class="flex items-center justify-center py-10">
+        <div class="flex flex-col items-center gap-4">
+          <div class="h-12 w-12 animate-spin rounded-full border-4 border-[#2a3644] border-t-[#3d99f5]"></div>
+          <p class="text-sm text-gray-300">Loading showtimes...</p>
+        </div>
+      </div>
+    </div>
+  }
+
+  @else if (error()) {
+    <div class="section-surface alert-error text-center">
+      <svg class="mx-auto h-12 w-12 text-red-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <p class="text-red-200 font-medium mb-3">{{ error() }}</p>
+      <button 
+        class="retry-btn"
+        (click)="loadShowtimes()"
+      >
+        Retry
+      </button>
+    </div>
+  }
+
+  @else {
+    <div class="section-surface table-block">
+      <app-admin-data-table
+        [columns]="columns"
+        [data]="paginatedShowtimes()"
+        [actions]="actions"
+        [loading]="loading()"
+        (actionClicked)="onAction({ action: $event.action, item: $event.row })"
+      ></app-admin-data-table>
+    </div>
+
+    <div class="section-surface pagination-surface">
+      <app-pagination
+        [startIndex]="startIndex()"
+        [endIndex]="endIndex()"
+        [totalCount]="showtimes().length"
+        [page]="page()"
+        [totalPages]="totalPages()"
+        (previous)="previousPage()"
+        (next)="nextPage()"
+      ></app-pagination>
+    </div>
+  }
+</div>
+

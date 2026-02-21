@@ -1,0 +1,57 @@
+<div class="page-shell">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Admin · Cinemas</p>
+      <h1 class="page-title">Cinema Management</h1>
+      <p class="page-subtitle">Control every cinema, amenity, and showtime from one sleek panel.</p>
+    </div>
+    <app-primary-button label="Add New Cinema" [icon]="true" (clicked)="onAddCinema()">
+      <svg icon class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
+      </svg>
+    </app-primary-button>
+  </div>
+
+  <div class="section-surface">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-1">
+      <div>
+        <app-search-input
+          [showLabel]="false"
+          placeholder="Search by cinema name, city or address..."
+          [value]="searchTerm()"
+          (valueChange)="onSearch($event)"
+        ></app-search-input>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-surface table-block">
+    <app-admin-data-table
+      [data]="paginatedCinemas()"
+      [columns]="tableColumns"
+      [actions]="tableActions"
+      [loading]="loading()"
+      (actionClicked)="onTableAction($event)"
+    ></app-admin-data-table>
+  </div>
+
+  @if (filteredCinemas().length > 0) {
+    <div class="section-surface pagination-surface">
+      <app-pagination
+        [startIndex]="startIndex()"
+        [endIndex]="endIndex()"
+        [totalCount]="filteredCinemas().length"
+        [page]="page()"
+        [totalPages]="totalPages()"
+        (previous)="previousPage()"
+        (next)="nextPage()"
+      ></app-pagination>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert-error">
+      <p class="text-red-200 font-medium">{{ error() }}</p>
+    </div>
+  }
+</div>

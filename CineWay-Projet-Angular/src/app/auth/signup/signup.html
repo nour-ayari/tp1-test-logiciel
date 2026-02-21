@@ -1,0 +1,146 @@
+<div class="container py-5 my-4" style="max-width: 70%">
+  <div class="row justify-content-center align-items-center">
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">Create Your CineWay Account</h1>
+        <p class="text-muted">Join us and enjoy exclusive cinema experiences</p>
+      </div>
+    <div class="col-md-6">
+      <form [formGroup]="signupform" (ngSubmit)="onSubmit()" novalidate class="px-4">
+        <!-- Email -->
+        <div class="form-group mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="Enter your email"
+            class="form-control"
+          />
+          @if (signupform.get('email')?.touched && signupform.get('email')?.invalid) {
+          <div class="text-danger">
+            @if (signupform.get('email')?.errors?.['required']) {
+            <div>Email is required.</div>
+            } @if (signupform.get('email')?.errors?.['email']) {
+            <div>Invalid email format.</div>
+            } @if (signupform.get('email')?.errors?.['emailExists']) {
+            <div>Email already exists.</div>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Full Name -->
+        <div class="form-group mb-3">
+          <label for="full_name" class="form-label">Full Name</label>
+          <input
+            type="text"
+            id="full_name"
+            formControlName="full_name"
+            placeholder="Enter your full name"
+            class="form-control"
+          />
+          @if (signupform.get('full_name')?.touched && signupform.get('full_name')?.invalid) {
+          <div class="text-danger">
+            @if (signupform.get('full_name')?.errors?.['required']) {
+            <div>Full name is required.</div>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="form-group mb-3">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-group">
+            <input
+              [type]="showPass() ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              placeholder="Enter a strong password"
+              class="form-control"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="togglePass()"
+              tabindex="-1"
+            >
+              <i class="bi" [class]="showPass() ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </div>
+          @if (signupform.get('password')?.touched && signupform.get('password')?.invalid) {
+          <div class="text-danger">
+            @if (signupform.get('password')?.errors?.['required']) {
+            <div>Password is required.</div>
+            } @if (signupform.get('password')?.errors?.['minlength']) {
+            <div>Password must be at least 8 characters.</div>
+            } @if (signupform.get('password')?.errors?.['weakPassword']) {
+            <div>Password must contain uppercase, lowercase, number, and special character.</div>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="form-group mb-3">
+          <label for="date_of_birth" class="form-label">Date of Birth</label>
+          <input
+            type="date"
+            id="date_of_birth"
+            formControlName="date_of_birth"
+            class="form-control"
+          />
+          @if (signupform.get('date_of_birth')?.errors?.['futureDate']) {
+          <div class="text-danger">Date of birth cannot be in the future.</div>
+          }
+        </div>
+
+        <!-- Profile Picture URL -->
+        <div class="form-group mb-3">
+          <label for="profile_picture_url" class="form-label">Profile Picture URL</label>
+          <input
+            type="url"
+            id="profile_picture_url"
+            formControlName="profile_picture_url"
+            placeholder="https://example.com/avatar.jpg"
+            class="form-control"
+          />
+          @if (signupform.get('profile_picture_url')?.errors?.['invalidUrl']) {
+          <div class="text-danger">Enter a valid URL.</div>
+          }
+        </div>
+
+        <!-- Newsletter -->
+        <div class="form-group form-check mb-3">
+          <input
+            type="checkbox"
+            id="newsletter_subscribed"
+            formControlName="newsletter_subscribed"
+            class="form-check-input"
+          />
+          <label for="newsletter_subscribed" class="form-check-label"
+            >Subscribe to newsletter</label
+          >
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="signupform.invalid">
+          @if(!isLoading()){ Sign Up} @else {
+          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+          Loading... }
+        </button>
+
+        <p class="mt-3 text-center text-muted">
+          Already have an account? <a [routerLink]="['/' + APP_ROUTES.login]">Login here</a>.
+        </p>
+      </form>
+    </div>
+    <div class="col-md-6 d-none d-md-flex justify-content-center">
+      <img
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiIIQIFOb8Fx4XXbGrNUJxk4X8Ve5GrOAh1Oa1_ThTXf_Uo1ySRVVNlAzDlFYyw1a6Y983w8ccBdzwP_0WjdxNGa6vNUQ6X14uOg-c00O_Kl5I_OFLqEeGX4UNMQCUUCVTBqNr6kJulShLUttwWFjiFLtm9oORpZMCw9if7I7aVBIxnMRWB4g_s6m9UMxXZs06qQYPkKnvpTgvaHRj8l8lBWOKBXZ2PJlJGAwtTdcvC3UJ6nR8kMqsb7_FHDqcDYwP7Z3xKYwDOV1N"
+        class="img-fluid rounded-3 shadow"
+        alt="Cinema Image"
+      />
+    </div>
+  </div>
+</div>

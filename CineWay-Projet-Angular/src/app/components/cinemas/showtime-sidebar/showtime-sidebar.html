@@ -1,0 +1,180 @@
+<div
+  class="sidebar-backdrop"
+  (click)="close()"
+  animate.enter="fade-in"
+  animate.leave="fade-out"
+></div>
+
+<div
+  class="sidebar d-flex flex-column p-4 text-center text-light"
+  animate.enter="slide-in"
+  animate.leave="slide-out"
+  style="width: 400px"
+>
+  <button class="btn btn-outline-light mb-4 align-self-start" (click)="close()">
+    <i class="bi bi-arrow-left"></i> Back
+  </button>
+  @if (isLoading()) {
+  <div class="placeholder-glow my-5">
+    <div class="placeholder w-100 mb-3" style="height: 40px"></div>
+    <div class="placeholder w-75 mb-2" style="height: 30px"></div>
+    <div class="placeholder w-50" style="height: 30px"></div>
+  </div>
+  } @else { @if (error()) {
+  <p class="text-danger mt-5">Failed to load showtime details.</p>
+  } @if (showtime()) {
+  <div class="d-flex gap-3 align-items-start my-5">
+    <img
+      class="rounded-3 flex-shrink-0"
+      [src]="movie().image_url"
+      style="width: 80px; height: 120px; object-fit: cover"
+    />
+    <div class="text-start">
+      <h5 class="fw-bold my-2">{{ movie().title }}</h5>
+      <p class="text-secondary small mb-2">
+        {{ movie().description }}
+      </p>
+
+    </div>
+  </div>
+
+  <div
+    class="d-flex flex-column align-items-center gap-1 bg-light bg-opacity-10 rounded-3 py-2 my-2 shadow-sm"
+  >
+    <h5 class="text-secondary fw-semibold my-2">
+      <i class="bi bi-calendar-date me-2"></i>
+      {{ showtime()?.screening_date | date : 'fullDate' }}
+    </h5>
+    <h2 class="fw-bold">
+      {{ showtime()?.screening_time | date : 'shortTime' }}
+    </h2>
+
+    <p class="text-secondary small mb-1">
+      Expected to end at
+      <span class="fw-bold">
+        {{ getEndTime(showtime()?.screening_time, movie().duration_minutes) | date : 'shortTime' }}
+      </span>
+    </p>
+    <h5>
+      <i class="bi bi-geo-fill"></i>
+      {{ showtime()?.room_name }}
+    </h5>
+  </div>
+
+  <div class="my-3">
+    <h4 class="fw-semibold mb-2">Price : {{ showtime()?.price | currency }}</h4>
+
+  </div>
+  <div class="mt-auto">
+  <button
+    class="btn btn-lg w-100 fw-bold"
+    [class.btn-warning]="showtime()?.available_seats_count! > 0"
+    [class.btn-secondary]="showtime()?.available_seats_count === 0"
+    [disabled]="showtime()?.available_seats_count === 0"
+  >
+    <i class="bi bi-ticket-detailed"></i>
+    {{ showtime()?.available_seats_count === 0 ? 'Sold Out' : 'Book Now' }}
+  </button>
+  @if (showtime()?.available_seats_count === 0) {
+  <div class="mt-3 text-center">
+    <p class="text-secondary small mb-1">
+      <i class="bi bi-info-circle me-1"></i>
+      We’re sorry, but there are no seats available for this film.
+    </p>
+    <p class="text-secondary small mb-0">Please check another showtime.</p>
+  </div>
+  }
+  </div>
+  } }
+</div>
+
+<div
+  class="sidebar-backdrop"
+  (click)="close()"
+  animate.enter="fade-in"
+  animate.leave="fade-out"
+></div>
+
+<div
+  class="sidebar d-flex flex-column p-4 text-center text-light"
+  animate.enter="slide-in"
+  animate.leave="slide-out"
+  style="width: 400px"
+>
+  <button class="btn btn-outline-light mb-4 align-self-start" (click)="close()">
+    <i class="bi bi-arrow-left"></i> Back
+  </button>
+  @if (isLoading()) {
+  <div class="placeholder-glow my-5">
+    <div class="placeholder w-100 mb-3" style="height: 40px"></div>
+    <div class="placeholder w-75 mb-2" style="height: 30px"></div>
+    <div class="placeholder w-50" style="height: 30px"></div>
+  </div>
+  } @else { @if (error()) {
+  <p class="text-danger mt-5">Failed to load showtime details.</p>
+  } @if (showtime()) {
+  <div class="d-flex gap-3 align-items-start my-5">
+    <img
+      class="rounded-3 flex-shrink-0"
+      [src]="movie().image_url"
+      style="width: 80px; height: 120px; object-fit: cover"
+    />
+    <div class="text-start">
+      <h5 class="fw-bold my-2">{{ movie().title }}</h5>
+      <p class="text-secondary small mb-2">
+        {{ movie().description }}
+      </p>
+
+    </div>
+  </div>
+
+  <div
+    class="d-flex flex-column align-items-center gap-1 bg-light bg-opacity-10 rounded-3 py-2 my-2 shadow-sm"
+  >
+    <h5 class="text-secondary fw-semibold my-2">
+      <i class="bi bi-calendar-date me-2"></i>
+      {{ showtime()?.screening_date | date : 'fullDate' }}
+    </h5>
+    <h2 class="fw-bold">
+      {{ showtime()?.screening_time | date : 'shortTime' }}
+    </h2>
+
+    <p class="text-secondary small mb-1">
+      Expected to end at
+      <span class="fw-bold">
+        {{ getEndTime(showtime()?.screening_time, movie().duration_minutes) | date : 'shortTime' }}
+      </span>
+    </p>
+    <h5>
+      <i class="bi bi-geo-fill"></i>
+      {{ showtime()?.room_name }}
+    </h5>
+  </div>
+
+  <div class="my-3">
+    <h4 class="fw-semibold mb-2">Price : {{ showtime()?.price | currency }}</h4>
+
+  </div>
+  <div class="mt-auto">
+  <button
+    class="btn btn-lg w-100 fw-bold"
+    [class.btn-warning]="showtime()?.available_seats_count! > 0"
+    [class.btn-secondary]="showtime()?.available_seats_count === 0"
+    [disabled]="showtime()?.available_seats_count === 0"
+    (click)="goToBooking()"
+  >
+    <i class="bi bi-ticket-detailed"></i>
+    {{ showtime()?.available_seats_count === 0 ? 'Sold Out' : 'Book Now' }}
+  </button>
+  @if (showtime()?.available_seats_count === 0) {
+  <div class="mt-3 text-center">
+    <p class="text-secondary small mb-1">
+      <i class="bi bi-info-circle me-1"></i>
+      We’re sorry, but there are no seats available for this film.
+    </p>
+    <p class="text-secondary small mb-0">Please check another showtime.</p>
+  </div>
+  }
+  </div>
+  } }
+</div>

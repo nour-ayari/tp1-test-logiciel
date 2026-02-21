@@ -1,0 +1,8 @@
+.d-flex.overflow-x-auto::-webkit-scrollbar {
+  height: 6px;
+}
+
+.d-flex.overflow-x-auto::-webkit-scrollbar-thumb {
+  background-color: #adb5bd;
+  border-radius: 10px;
+}

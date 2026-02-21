@@ -1,0 +1,140 @@
+<div class="page-shell">
+  <div class="page-header text-center">
+    <h1 class="page-title">{{ isEditMode() ? 'Edit Showtime' : 'Add Showtime' }}</h1>
+    <p class="page-subtitle">
+      {{ isEditMode() ? 'Update showtime details' : 'Create a new showtime session' }}
+    </p>
+  </div>
+
+  @if (loading()) {
+    <div class="section-surface">
+      <div class="flex items-center justify-center py-12">
+        <div
+          class="h-10 w-10 animate-spin rounded-full border-4 border-border-dark border-t-primary"
+        ></div>
+      </div>
+    </div>
+  } @else {
+    @if (error()) {
+      <div class="alert-error mb-6">
+        {{ error() }}
+      </div>
+    }
+
+    <div class="flex justify-center items-start min-h-[calc(100vh-300px)]">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="w-full max-w-2xl space-y-6 px-6 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="md:col-span-2 space-y-2">
+            <label class="block text-sm font-semibold text-gray-200">Movie *</label>
+            <select
+              formControlName="movie_id"
+              class="w-full px-4 py-3 bg-bg-form border-2 border-border-dark rounded-lg text-white focus:border-primary focus:outline-none transition-colors text-base appearance-none cursor-pointer"
+            >
+              <option value="">Select a movie</option>
+              @for (movie of movies(); track movie.id) {
+                <option [value]="movie.id">{{ movie.title }}</option>
+              }
+            </select>
+            @if (form.get('movie_id')?.invalid && form.get('movie_id')?.touched) {
+              <p class="text-red-400 text-xs">Movie is required</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-200">Cinema *</label>
+            <select
+              formControlName="cinema_id"
+              (change)="onCinemaChange()"
+              class="w-full px-4 py-3 bg-bg-form border-2 border-border-dark rounded-lg text-white focus:border-primary focus:outline-none transition-colors text-base appearance-none cursor-pointer"
+            >
+              <option value="">Select a cinema</option>
+              @for (cinema of cinemas(); track cinema.id) {
+                <option [value]="cinema.id">{{ cinema.name }}</option>
+              }
+            </select>
+            @if (form.get('cinema_id')?.invalid && form.get('cinema_id')?.touched) {
+              <p class="text-red-400 text-xs">Cinema is required</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-200">Room *</label>
+            <select
+              formControlName="room_id"
+              class="w-full px-4 py-3 bg-bg-form border-2 border-border-dark rounded-lg text-white focus:border-primary focus:outline-none transition-colors text-base appearance-none cursor-pointer"
+              [disabled]="rooms().length === 0"
+            >
+              <option value="">Select a room</option>
+              @for (room of rooms(); track room.id) {
+                <option [value]="room.id">{{ room.name }}</option>
+              }
+            </select>
+            @if (form.get('room_id')?.invalid && form.get('room_id')?.touched) {
+              <p class="text-red-400 text-xs">Room is required</p>
+            }
+            @if (rooms().length === 0 && form.get('cinema_id')?.value) {
+              <p class="text-yellow-400 text-xs">Please select a cinema first</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-200">Screening Date *</label>
+            <input
+              type="date"
+              formControlName="screening_date"
+              class="w-full px-4 py-3 bg-bg-form border-2 border-border-dark rounded-lg text-white focus:border-primary focus:outline-none transition-colors text-base"
+            />
+            @if (form.get('screening_date')?.invalid && form.get('screening_date')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('screening_date') }}</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-gray-200">Screening Time *</label>
+            <input
+              type="time"
+              formControlName="screening_time"
+              class="w-full px-4 py-3 bg-bg-form border-2 border-border-dark rounded-lg text-white focus:border-primary focus:outline-none transition-colors text-base"
+            />
+            @if (form.get('screening_time')?.invalid && form.get('screening_time')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('screening_time') }}</p>
+            }
+          </div>
+
+          <div class="md:col-span-2 space-y-2">
+            <label class="block text-sm font-semibold text-gray-200">Ticket Price ($) *</label>
+            <input
+              type="number"
+              formControlName="ticket_price"
+              placeholder="e.g., 15.99"
+              class="w-full px-4 py-3 bg-bg-form border-2 border-border-dark rounded-lg text-white placeholder-gray-500 focus:border-primary focus:outline-none transition-colors text-base"
+              min="0"
+              step="0.01"
+            />
+            @if (form.get('ticket_price')?.invalid && form.get('ticket_price')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('ticket_price') }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="flex gap-4 pt-6 border-t border-border-dark">
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="flex-1 px-6 py-3 rounded-lg border-2 border-border-dark text-gray-300 hover:border-primary hover:text-primary hover:bg-primary/10 transition-colors font-semibold text-base"
+            [disabled]="loading()"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="flex-1 px-6 py-3 rounded-lg bg-primary text-white hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold text-base"
+            [disabled]="loading() || form.invalid"
+          >
+            {{ loading() ? 'Saving...' : isEditMode() ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

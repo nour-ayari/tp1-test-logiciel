@@ -1,0 +1,19 @@
+<div class="flex gap-8">
+  <div class="w-64 overflow-y-auto h-full">
+    <app-sidebar
+      [currentSection]="section"
+      (logout)="onLogout()"
+      (sectionChange)="onSectionChange($event)"
+    />
+  </div>
+
+  <section class="relative flex flex-col mx-auto min-w-4xl">
+    <app-content
+      [section]="section"
+      (uploadProfilePicture)="onUploadProfilePicture($event)"
+      (updateProfile)="onUpdateProfile($event)"
+      (accountDeleted)="onAccountDeleted()"
+    >
+    </app-content>
+  </section>
+</div>

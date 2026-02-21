@@ -1,0 +1,12 @@
+<button
+  [disabled]="disabled()"
+  [class.opacity-50]="disabled()"
+  [class.cursor-not-allowed]="disabled()"
+  class="inline-flex items-center gap-2.5 rounded-xl bg-[#3d99f5] px-6 py-3 text-base font-semibold text-white shadow-xl shadow-[#3d99f5]/25 transition-all duration-200 hover:bg-[#2b88e4] hover:shadow-[#3d99f5]/35 focus:outline-none focus:ring-2 focus:ring-[#3d99f5] focus:ring-offset-2 focus:ring-offset-[#101922]"
+  (click)="onClick()"
+>
+  @if (icon()) {
+    <ng-content select="[icon]"></ng-content>
+  }
+  <span class="text-white">{{ label() }}</span>
+</button>

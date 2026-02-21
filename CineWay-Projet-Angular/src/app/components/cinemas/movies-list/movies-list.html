@@ -1,0 +1,40 @@
+<div class="mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Available Movies</h3>
+  </div>
+  @if (Error()) {
+  <p class="text-danger">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    An error occurred while loading movies.
+  </p>
+  } @else if (!loadedMovies().length && !isLoading()) {
+  <p class="text-warning">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    No movies available for this cinema at the moment.
+  </p>
+  } @else {
+  <div class="position-relative">
+    <div #slider class="d-flex gap-3 overflow-x-auto pb-2" style="scroll-behavior: smooth">
+      @for (movie of loadedMovies(); track movie.id) {
+      <div style="width: 180px; flex-shrink: 0">
+        <app-movie [movie]="movie"></app-movie>
+      </div>
+      } @if (isLoading()) {
+      <div class="placeholder-glow" style="width: 180px; flex-shrink: 0">
+        <div class="placeholder rounded-4 w-100" style="aspect-ratio: 2/3"></div>
+      </div>
+      }
+    </div>
+    @if (hasMore()) {
+    <button
+      class="btn btn-outline-primary rounded-circle position-absolute top-50 end-0 translate-middle-y shadow"
+      style="width: 42px; height: 42px; z-index: 10"
+      (click)="loadMore()"
+      [disabled]="isLoading()"
+      title="Load more movies">
+      <i class="bi bi-chevron-right"></i>
+    </button>
+    }
+  </div>
+  }
+</div>

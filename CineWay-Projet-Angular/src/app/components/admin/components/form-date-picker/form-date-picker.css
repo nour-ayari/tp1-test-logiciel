@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+input[type="date"] {
+  color-scheme: dark;
+}
+
+input.error {
+  border-color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+input:focus.error {
+  border-color: #ef4444;
+}

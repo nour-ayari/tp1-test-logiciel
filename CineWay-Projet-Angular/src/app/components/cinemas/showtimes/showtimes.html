@@ -1,0 +1,87 @@
+<div class="mt-4">
+  <h4 class="text-lg font-semibold mb-4">Select Date</h4>
+  <div class="flex flex-wrap gap-4 pb-2 mb-6">
+    @for (day of days(); track day.date) {
+      <button
+        (click)="selectedDay.set(day.date)"
+        [class.bg-primary]="selectedDay() === day.date"
+        [class.bg-bg-dark]="selectedDay() !== day.date"
+        class="shrink-0 px-6 py-4 rounded-lg transition-colors hover:bg-primary-600 min-w-32 text-white"
+      >
+        <div class="text-center">
+          <div class="text-lg font-semibold">{{ day.label }}</div>
+        </div>
+      </button>
+    }
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex items-center justify-center py-20">
+      <div
+        class="h-12 w-12 animate-spin rounded-full border-4 border-gray-600 border-t-primary"
+      ></div>
+    </div>
+  } @else if (error()) {
+    <div class="text-red-400 text-center py-3">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      Failed to load showtimes. Please try again later.
+    </div>
+  } @else {
+    <div class="space-y-6">
+      @for (movieGroup of groupedMovies(); track movieGroup.movie.id) {
+        <div class="bg-bg-dark rounded-xl p-6">
+          <!-- Movie Info -->
+          <div class="mb-4 pb-4 border-b border-white/10">
+            <div class="d-flex gap-3 mb-3">
+              <img
+                [src]="movieGroup.movie.image_url"
+                [alt]="movieGroup.movie.title"
+                class="rounded"
+                style="width: 80px; height: 130px; object-fit: cover"
+              />
+              <div class="grow">
+                <h4 class="text-xl font-bold mb-2">{{ movieGroup.movie.title }}</h4>
+                <div class="text-gray-400 mb-1">
+                  <i class="bi bi-clock"></i> {{ movieGroup.movie.duration_minutes | TimeToHours }}
+                </div>
+                <div class="text-gray-400 mb-2">
+                  <span
+                    class="badge bg-white/10 border border-white/20 text-xs px-2 py-1 rounded-full"
+                    >{{ movieGroup.movie.genre }}</span
+                  >
+                </div>
+                <div class="text-yellow-400">
+                  <i class="bi bi-star-fill"></i> {{ movieGroup.movie.rating }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Showtimes Grid -->
+          @if (movieGroup.dates[selectedDay()]) {
+            <div>
+              <h4 class="text-sm font-semibold text-gray-300 mb-3">Available Times</h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                @for (st of movieGroup.dates[selectedDay()]; track st.id) {
+                  <button
+                    (click)="chooseShowtime(st.id, movieGroup.movie)"
+                    class="flex flex-col items-center justify-center p-4 bg-bg-medium-dark hover:bg-primary rounded-lg transition-colors group text-white"
+                  >
+                    <span class="text-lg font-bold group-hover:text-white">
+                      {{ st.screening_time | date: 'shortTime' }}
+                    </span>
+                    <span class="text-xs text-gray-400 group-hover:text-white/80 mt-1">
+                      ${{ st.price.toFixed(2) }}
+                    </span>
+                  </button>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="text-gray-400 text-center py-4">No showtimes available for this day.</div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

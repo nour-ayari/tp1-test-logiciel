@@ -1,0 +1,42 @@
+<a [routerLink]="['/movies', movie().id]" class="text-decoration-none">
+  <div
+    class="card position-relative overflow-hidden d-flex flex-column rounded-4 border border-gray"
+    style="aspect-ratio: 2/3; background-size: cover;
+     background-position: center;
+     background-image: url('{{ movie().image_url }}');"
+  >
+    <div
+      class="position-absolute top-0 start-0 w-100 h-100"
+      style="
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3), transparent);
+      "
+    ></div>
+
+    <!-- Favorite Button -->
+    <button
+      (click)="toggleFavorite($event)"
+      class="favorite-btn position-absolute top-0 end-0 m-2"
+      [class.active]="isFavorite()"
+      style="z-index: 2"
+    >
+      <i [class]="isFavorite() ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+    </button>
+
+    <div class="mt-auto p-2 position-relative z-1">
+      <h4 class="card-title fw-bold text-white fs-5">{{ movie().title }}</h4>
+      <div class="d-flex align-items-center gap-2 text-primary">
+        <span class="material-symbols-outlined">
+          <i class="bi bi-star"></i>
+        </span>
+        <span>{{ movie().rating }}</span>
+      </div>
+      <div class="d-flex flex-wrap gap-1 mt-2">
+        @for (g of movie().genre; track $index) {
+          <span class="badge bg-opacity-10 border border-white">
+            {{ g }}
+          </span>
+        }
+      </div>
+    </div>
+  </div>
+</a>

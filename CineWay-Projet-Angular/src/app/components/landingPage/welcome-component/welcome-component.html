@@ -1,0 +1,29 @@
+<section
+  class="relative w-full min-h-screen pt-24
+         bg-[url('https://images.unsplash.com/photo-1524985069026-dd778a71c7b4')]
+         bg-cover bg-center bg-no-repeat"
+>
+
+  <div class="absolute inset-0 bg-black/60"></div>
+
+  <!-- Content -->
+  <div class="relative z-10 max-w-3xl mx-auto px-6 text-center flex flex-col items-center justify-center py-12 mt-12">
+    <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mt-4">
+      Your Cinematic Journey Starts Here
+    </h1>
+
+    <p class="mt-6 text-lg md:text-xl text-gray-300">
+      Discover the latest blockbusters, find showtimes at cineams near you, and book <br/>
+      your tickets instantly
+
+    </p>
+
+    <div class="mt-10 flex flex-col sm:flex-row gap-4">
+      <button class="cw-btn-primary text-lg px-8 py-3" (click)="showNowPlaying.emit()">
+        Explore Now Playing Movies
+      </button>
+
+    </div>
+
+  </div>
+</section>

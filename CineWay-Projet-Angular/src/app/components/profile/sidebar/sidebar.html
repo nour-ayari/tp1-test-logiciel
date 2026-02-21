@@ -1,0 +1,80 @@
+<aside class="sidebar" [class.collapsed]="isCollapsed">
+  <!-- Header with Toggle and User Profile -->
+  <div class="sidebar-header">
+    <!-- Toggle Button Inside -->
+    <button class="sidebar-toggle-inside" (click)="toggleSidebar()">
+      <span class="bi bi-list" *ngIf="isCollapsed"></span>
+      <span class="bi bi-x-lg" *ngIf="!isCollapsed"></span>
+    </button>
+
+    @if (user() && !isCollapsed) {
+      <div class="user-profile">
+        <img [src]="user()?.profile_picture_url || '/assets/avatar.png'" class="user-avatar" />
+        <div class="user-info">
+          <div class="user-name">{{ user()?.full_name }}</div>
+          <div class="user-email">{{ user()?.email }}</div>
+        </div>
+      </div>
+    }
+
+    @if (user() && isCollapsed) {
+      <div class="user-profile-collapsed">
+        <img
+          [src]="user()?.profile_picture_url || '/assets/avatar.png'"
+          class="user-avatar-small"
+        />
+      </div>
+    }
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="sidebar-nav">
+    <button
+      class="nav-item"
+      [class.active]="selectedSection === 'profile'"
+      (click)="selectSection('profile')"
+      [title]="isCollapsed ? 'Profile Details' : ''"
+    >
+      <span class="bi bi-person nav-icon"></span>
+      <span class="nav-label" *ngIf="!isCollapsed">Profile Details</span>
+    </button>
+
+    <a
+      routerLink="/favorites"
+      class="nav-item"
+      routerLinkActive="active"
+      [title]="isCollapsed ? 'My Favorites' : ''"
+    >
+      <span class="bi bi-heart nav-icon"></span>
+      <span class="nav-label" *ngIf="!isCollapsed">My Favorites</span>
+    </a>
+
+    <button
+      class="nav-item"
+      [class.active]="selectedSection === 'history'"
+      (click)="selectSection('history')"
+      [title]="isCollapsed ? 'Purchase History' : ''"
+    >
+      <span class="bi bi-receipt nav-icon"></span>
+      <span class="nav-label" *ngIf="!isCollapsed">Purchase History</span>
+    </button>
+
+    <button
+      class="nav-item"
+      [class.active]="selectedSection === 'help'"
+      (click)="selectSection('help')"
+      [title]="isCollapsed ? 'Help & Support' : ''"
+    >
+      <span class="bi bi-headset nav-icon"></span>
+      <span class="nav-label" *ngIf="!isCollapsed">Help & Support</span>
+    </button>
+  </nav>
+
+  <!-- Footer with Logout -->
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="onLogoutClick()" [title]="isCollapsed ? 'Log Out' : ''">
+      <span class="bi bi-box-arrow-left nav-icon"></span>
+      <span class="nav-label" *ngIf="!isCollapsed">Log Out</span>
+    </button>
+  </div>
+</aside>

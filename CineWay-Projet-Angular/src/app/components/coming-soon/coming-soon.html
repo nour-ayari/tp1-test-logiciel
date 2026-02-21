@@ -1,0 +1,97 @@
+<div class="coming-soon-container">
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-white mb-2">Coming Soon</h1>
+      <p class="text-gray-400">Discover movies that will be released soon</p>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading() && comingSoonMovies().length === 0) {
+      <div class="flex justify-center items-center py-20">
+        <div class="loader"></div>
+      </div>
+    }
+
+    <!-- Error State -->
+    @if (error()) {
+      <div class="bg-red-900/20 border border-red-500 rounded-lg p-4 text-red-300 mb-6">
+        {{ error() }}
+      </div>
+    }
+
+    <!-- Movies Grid -->
+    @if (!isLoading() || comingSoonMovies().length > 0) {
+      <div class="movies-grid">
+        @for (movie of comingSoonMovies(); track movie.id) {
+          <div class="movie-card" [routerLink]="['/movies', movie.id]" style="cursor: pointer">
+            <div class="movie-poster-container">
+              <img [src]="movie.image_url" [alt]="movie.title" class="movie-poster" />
+              <div class="movie-overlay">
+                <!-- Favorite Heart Icon -->
+                <button
+                  (click)="toggleFavorite(movie, $event)"
+                  class="favorite-btn absolute top-2 right-2 focus:outline-none focus:ring-2 focus:ring-white z-10"
+                  [class.active]="isFavorite(movie.id)"
+                  [attr.aria-label]="'Toggle favorite for ' + movie.title"
+                >
+                  <i [class]="isFavorite(movie.id) ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+                </button>
+              </div>
+            </div>
+            <div class="movie-info">
+              <h3 class="movie-title">{{ movie.title }}</h3>
+              <div class="movie-meta">
+                <span class="rating">
+                  <i class="bi bi-star-fill text-yellow-400"></i>
+                  {{ movie.rating }}
+                </span>
+                <span class="duration">{{ movie.duration_minutes }} min</span>
+              </div>
+              <div class="movie-genres">
+                @for (genre of movie.genre; track $index) {
+                  <span class="genre-badge">{{ genre }}</span>
+                }
+              </div>
+              <div class="release-info">
+                <p class="release-date">
+                  <i class="bi bi-calendar"></i>
+                  Release: {{ movie.release_date | date: 'mediumDate' }}
+                </p>
+              </div>
+              <p class="movie-description">{{ movie.description }}</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Load More Button -->
+      @if (hasMoreMovies() && !isLoading()) {
+        <div class="text-center mt-8">
+          <button
+            (click)="loadMoreMovies()"
+            class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg transition-colors"
+          >
+            Load More Movies
+          </button>
+        </div>
+      }
+
+      <!-- No More Movies Message -->
+      @if (!hasMoreMovies() && comingSoonMovies().length > 0) {
+        <div class="text-center mt-8">
+          <p class="text-gray-400">No more coming soon movies to load</p>
+        </div>
+      }
+    }
+
+    <!-- Empty State -->
+    @if (!isLoading() && comingSoonMovies().length === 0 && !error()) {
+      <div class="empty-state">
+        <i class="bi bi-calendar-x text-6xl text-gray-600 mb-4"></i>
+        <h3 class="text-xl text-gray-400 mb-2">No coming soon movies</h3>
+        <p class="text-gray-500">Check back later for upcoming movie releases!</p>
+      </div>
+    }
+  </div>
+</div>

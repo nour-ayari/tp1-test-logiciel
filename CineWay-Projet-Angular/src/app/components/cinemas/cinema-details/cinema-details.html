@@ -1,0 +1,45 @@
+<div class="container py-5">
+  <button
+    class="btn btn-outline-light d-flex align-items-center gap-2 mx-2 my-4"
+    (click)="goBack()"
+  >
+    <i class="bi bi-arrow-left"></i>
+    Back to Cinemas
+  </button>
+
+  @if (error()) {
+    <div class="text-danger text-center py-5">
+      <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+      <p class="mt-3">An error occurred while loading the cinema details.</p>
+      <p class="text-secondary">Please try again later.</p>
+    </div>
+  } @else if (isLoading()) {
+    <div class="spinner-grow text-primary" role="status"></div>
+  } @else if (hasValue() && cinema(); as c) {
+    <h1 class="cinema-title mt-2 mb-0 p-4">{{ c.name }}</h1>
+    <div class="d-flex align-items-center justify-content-between px-4 mb-3">
+      <p class="text-secondary fw-bold mb-0">
+        <i class="bi bi-geo-alt-fill me-1"></i>
+        {{ c.address }}, {{ c.city }}
+      </p>
+      <button
+        class="btn d-flex align-items-center gap-2 fw-bold shadow-sm"
+        [class]="isFavorite() ? 'btn-danger' : 'btn-outline-danger'"
+        title="{{ isFavorite() ? 'Remove from Favorites' : 'Add to Favorites' }}"
+        (click)="toggleFavorite()"
+      >
+        <i class="bi" [class]="isFavorite() ? 'bi-x' : 'bi-heart'"></i>
+        {{ isFavorite() ? 'Remove from Favorites' : 'Add to Favorites' }}
+      </button>
+    </div>
+    <app-movies-list [cinemaId]="c.id"></app-movies-list>
+
+    <div class="mt-4">
+      <div #showtimes class="mt-4">
+        @defer (on viewport(showtimes); prefetch on idle) {
+          <app-showtimes [cinemaId]="c.id"></app-showtimes>
+        }
+      </div>
+    </div>
+  }
+</div>

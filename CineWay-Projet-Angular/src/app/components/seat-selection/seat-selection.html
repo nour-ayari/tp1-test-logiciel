@@ -1,0 +1,150 @@
+<div class="seat-selection-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-content">
+      <div class="movie-info">
+        <h2 class="movie-title">{{ movie()?.title || 'Movie Title' }}</h2>
+        <p class="showtime-info">
+          <i class="bi bi-geo-alt-fill"></i>
+          <span>Cinema 11</span>
+          <span class="separator">|</span>
+          <i class="bi bi-calendar-fill"></i>
+          <span>Today, 7:30 PM</span>
+        </p>
+      </div>
+      <button class="btn-back" (click)="goBack()"><i class="bi bi-arrow-left"></i> Back</button>
+    </div>
+
+    <!-- Error Messages -->
+    @if (reservationError()) {
+      <div class="alert alert-error">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>{{ reservationError() }}</span>
+        <button class="btn-close-alert" (click)="reservationError.set(null)">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Left Side: Seating Chart -->
+    <div class="seating-area">
+      <div class="screen-label">SCREEN</div>
+
+      <div class="seats-grid">
+        @for (row of seatsByRow() | keyvalue; track row.key) {
+          <div class="seat-row">
+            <span class="row-label">{{ row.key }}</span>
+            <div class="seats">
+              @for (seat of row.value; track seat.id; let i = $index) {
+                <button
+                  class="seat"
+                  [class.available]="getSeatStatus(seat.id) === 'available'"
+                  [class.mine]="isSelected(seat.id) || getSeatStatus(seat.id) === 'reserved_by_me'"
+                  [class.held]="getSeatStatus(seat.id) === 'held'"
+                  [class.booked]="getSeatStatus(seat.id) === 'booked'"
+                  [class.recliner]="seat.seat_type === 'recliner'"
+                  [class.processing]="isProcessing()"
+                  [disabled]="!isAvailable(seat.id) || isProcessing()"
+                  (click)="toggleSeat(seat)"
+                  [title]="getSeatTooltip(seat)"
+                >
+                  <i class="bi bi-square-fill"></i>
+                </button>
+                @if (i === 2 || i === 6) {
+                  <div class="aisle-gap"></div>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Right Side: Booking Summary -->
+    <div class="booking-panel">
+      <div class="booking-summary">
+        <h3 class="booking-title">Booking Summary</h3>
+
+        @if (selectedSeats().size > 0) {
+          <div class="booking-details">
+            <div class="selected-seats-list">
+              <h4>Selected Seats ({{ selectedSeats().size }}/{{ ticketCount() }})</h4>
+              @for (seat of selectedSeatsArray(); track seat?.seat_id) {
+                <div class="seat-item">
+                  <span class="seat-label">{{ seat?.label }}</span>
+                  <span class="seat-price">${{ seat?.price }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="price-breakdown">
+              <div class="price-row">
+                <span>Subtotal:</span>
+                <span>${{ calculateTicketsTotal() }}</span>
+              </div>
+              <div class="price-row">
+                <span>Service Fee:</span>
+                <span>${{ serviceFee() }}</span>
+              </div>
+              <div class="price-row total">
+                <span>Total:</span>
+                <span>${{ calculateTotal() }}</span>
+              </div>
+            </div>
+
+            <button
+              class="btn-proceed"
+              [disabled]="selectedSeats().size === 0 || isProcessing() || timeRemaining() === 0"
+              (click)="proceedToPayment()"
+            >
+              @if (isProcessing()) {
+                <span>Processing...</span>
+              } @else {
+                <span>Proceed to Payment</span>
+                <i class="bi bi-arrow-right"></i>
+              }
+            </button>
+
+            @if (selectedSeats().size > 0) {
+              <button class="btn-cancel" (click)="cancelReservation()">
+                <i class="bi bi-x-circle"></i> Cancel Reservation
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="empty-selection">
+            <i class="bi bi-ticket-perforated"></i>
+            <p>Select seats to see booking summary</p>
+            @if (isProcessing()) {
+              <p class="processing-text">Processing your selection...</p>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Seat Status Legend -->
+      <div class="seat-types">
+        <h4>Seat Status</h4>
+        <div class="seat-type-item">
+          <span class="type-icon available"></span>
+          <span class="type-name">Available</span>
+        </div>
+        <div class="seat-type-item">
+          <span class="type-icon mine"></span>
+          <span class="type-name">Your Seats</span>
+        </div>
+        <div class="seat-type-item">
+          <span class="type-icon held"></span>
+          <span class="type-name">Reserved by Others</span>
+        </div>
+        <div class="seat-type-item">
+          <span class="type-icon booked"></span>
+          <span class="type-name">Sold</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

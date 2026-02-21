@@ -1,0 +1,17 @@
+<div
+  class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-center gap-4 text-sm text-gray-400"
+>
+  <div class="flex flex-row gap-6">
+    <a routerLink="/about" class="text-gray-400 hover:text-white transition cursor-pointer">
+      About Us
+    </a>
+    <a
+      routerLink="/profile"
+      [queryParams]="{ section: 'help' }"
+      class="text-gray-400 hover:text-white transition cursor-pointer"
+    >
+      Contact Us
+    </a>
+    <a routerLink="/faq" class="text-gray-400 hover:text-white transition cursor-pointer"> FAQ </a>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div
+  class="cinema-card d-flex flex-column p-3 p-md-4 rounded-4 text-white h-100 position-relative"
+>
+  <!-- Favorite Button -->
+  <button
+    (click)="toggleFavorite($event)"
+    class="favorite-btn position-absolute top-0 end-0 m-3"
+    [class.active]="isFavorite()"
+    style="z-index: 2"
+  >
+    <i [class]="isFavorite() ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+  </button>
+
+  <h3 class="fw-bold fs-5 mb-2 text-truncate cinema-title" title="{{ cinema().name }}">
+    {{ cinema().name }}
+  </h3>
+  <p
+    class="cinema-location text-truncate mb-3"
+    title="{{ cinema().address }}, {{ cinema().city }}"
+  >
+    <i class="bi bi-geo-alt-fill me-1"></i>
+    {{ cinema().address }}, {{ cinema().city }}
+  </p>
+  @if (cinema().amenities && cinema().amenities.length > 0) {
+    <div class="d-flex flex-wrap gap-3 amenities mb-auto pb-3 align-items-center">
+      @for (amenity of cinema().amenities.slice(0, 6); track $index) {
+        <i [class]="'bi amenity-icon ' + getIcon(amenity)" [title]="formatAmenityName(amenity)"></i>
+      }
+      @if (cinema().amenities.length > 6) {
+        <span class="text-gray-400 ms-1">...</span>
+      }
+    </div>
+  }
+  <a [routerLink]="route + '/' + cinema().id" class="mt-auto">
+    <button class="btn btn-primary w-100 fw-semibold cinema-btn">
+      <i class="bi bi-calendar3 me-2"></i>View Showtimes
+    </button>
+  </a>
+</div>

@@ -1,0 +1,85 @@
+<div class="container py-5 my-4" style="max-width: 70%">
+  <div class="row justify-content-center align-items-center">
+    <div class="col-md-6 px-6">
+      <div class="text-center mb-4 px-4">
+        <h1 class="fw-bold">Welcome Back to CineWay</h1>
+        <p class="text-muted">
+          Log in to access your account and enjoy exclusive cinema experiences
+        </p>
+      </div>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate class="px-5">
+        <!-- Email -->
+        <div class="form-group mb-3">
+          <label for="username" class="form-label">Email</label>
+          <input
+            type="email"
+            id="username"
+            formControlName="username"
+            placeholder="Enter your email"
+            class="form-control"
+          />
+          @if (loginForm.get('username')?.touched && loginForm.get('username')?.invalid) {
+          <div class="error">
+            @if (loginForm.get('username')?.errors?.['required']) {
+            <div class="text-danger">username is required.</div>
+            } @if (loginForm.get('username')?.errors?.['email']) {
+            <div class="text-danger">Invalid email format.</div>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="form-group mb-3">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-group">
+            <input
+              [type]="showPass() ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              placeholder="Enter your password"
+              class="form-control border border-secondary"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="togglePass()"
+              tabindex="-1"
+            >
+              <i class="bi" [class]="showPass() ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </div>
+
+          @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
+          <div class="error">
+            @if (loginForm.get('password')?.errors?.['required']) {
+            <div class="text-danger">Password is required.</div>
+            } @if (loginForm.get('password')?.errors?.['minlength']) {
+            <div class="text-danger">Password must be at least 8 characters.</div>
+            }
+          </div>
+          }
+        </div>
+        <br />
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="loginForm.invalid">
+          @if(!isLoading()) { Login } @else{
+          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+          Loading... }
+        </button>
+        <br />
+        <!-- Sign up Link -->
+        <p class="text-muted">
+          Don't have an account? <a [routerLink]="['/' + APP_ROUTES.signup]">Sign up</a>.
+        </p>
+      </form>
+    </div>
+    <div class="col-md-6 d-none d-md-flex justify-content-center">
+      <img
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiIIQIFOb8Fx4XXbGrNUJxk4X8Ve5GrOAh1Oa1_ThTXf_Uo1ySRVVNlAzDlFYyw1a6Y983w8ccBdzwP_0WjdxNGa6vNUQ6X14uOg-c00O_Kl5I_OFLqEeGX4UNMQCUUCVTBqNr6kJulShLUttwWFjiFLtm9oORpZMCw9if7I7aVBIxnMRWB4g_s6m9UMxXZs06qQYPkKnvpTgvaHRj8l8lBWOKBXZ2PJlJGAwtTdcvC3UJ6nR8kMqsb7_FHDqcDYwP7Z3xKYwDOV1N"
+        class="img-fluid rounded-3 shadow"
+        alt="Cinema Image"
+      />
+    </div>
+  </div>
+</div>

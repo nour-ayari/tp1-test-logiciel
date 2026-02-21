@@ -1,0 +1,147 @@
+<div class="favorites-container">
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-white mb-2">My Favorites</h1>
+      <p class="text-gray-400">Your saved movies and cinemas</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-4 mb-6 border-b border-gray-700">
+      <button
+        (click)="setActiveTab('movies')"
+        [class.active]="activeTab() === 'movies'"
+        class="tab-button"
+      >
+        <i class="bi bi-film"></i>
+        Movies ({{ favoriteMovies().length }})
+      </button>
+      <button
+        (click)="setActiveTab('cinemas')"
+        [class.active]="activeTab() === 'cinemas'"
+        class="tab-button"
+      >
+        <i class="bi bi-building"></i>
+        Cinemas ({{ favoriteCinemas().length }})
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="flex justify-center items-center py-20">
+        <div class="loader"></div>
+      </div>
+    }
+
+    <!-- Error State -->
+    @if (error()) {
+      <div class="bg-red-900/20 border border-red-500 rounded-lg p-4 text-red-300">
+        {{ error() }}
+      </div>
+    }
+
+    <!-- Movies Tab -->
+    @if (!isLoading() && activeTab() === 'movies') {
+      <div class="favorites-grid">
+        @if (favoriteMovies().length === 0) {
+          <div class="empty-state">
+            <i class="bi bi-heart text-6xl text-gray-600 mb-4"></i>
+            <h3 class="text-xl text-gray-400 mb-2">No favorite movies yet</h3>
+            <p class="text-gray-500 mb-6">Start adding movies to your favorites!</p>
+            <a routerLink="/explore" class="cw-btn-primary block mx-auto text-center">
+              Browse Movies
+            </a>
+          </div>
+        } @else {
+          @for (movie of favoriteMovies(); track movie.id) {
+            <div class="movie-card">
+              <div class="movie-poster-container">
+                <img [src]="movie.image_url" [alt]="movie.title" class="movie-poster" />
+                <div class="movie-overlay">
+                  <button
+                    (click)="removeMovieFromFavorites(movie.id)"
+                    class="favorite-btn active"
+                    title="Remove from favorites"
+                  >
+                    <i class="bi bi-heart-fill"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <div class="movie-meta">
+                  <span class="rating">
+                    <i class="bi bi-star-fill text-yellow-400"></i>
+                    {{ movie.rating }}
+                  </span>
+                  <span class="duration">{{ movie.duration_minutes }} min</span>
+                </div>
+                <div class="movie-genres">
+                  @for (genre of movie.genre; track $index) {
+                    <span class="genre-badge">{{ genre }}</span>
+                  }
+                </div>
+                <a [routerLink]="['/movies', movie.id]" class="view-details-btn"> View Details </a>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    }
+
+    <!-- Cinemas Tab -->
+    @if (!isLoading() && activeTab() === 'cinemas') {
+      <div class="cinemas-list">
+        @if (favoriteCinemas().length === 0) {
+          <div class="empty-state">
+            <i class="bi bi-building text-6xl text-gray-600 mb-4"></i>
+            <h3 class="text-xl text-gray-400 mb-2">No favorite cinemas yet</h3>
+            <p class="text-gray-500 mb-6">Start adding cinemas to your favorites!</p>
+            <a routerLink="/cinemas" class="cw-btn-primary block mx-auto text-center">
+              Browse Cinemas
+            </a>
+          </div>
+        } @else {
+          @for (cinema of favoriteCinemas(); track cinema.id) {
+            <div class="cinema-card">
+              <div class="cinema-content">
+                <div class="cinema-header">
+                  <h3 class="cinema-name">{{ cinema.name }}</h3>
+                  <button
+                    (click)="removeCinemaFromFavorites(cinema.id)"
+                    class="favorite-btn active"
+                    title="Remove from favorites"
+                  >
+                    <i class="bi bi-heart-fill"></i>
+                  </button>
+                </div>
+                <div class="cinema-details">
+                  <p class="cinema-address">
+                    <i class="bi bi-geo-alt"></i>
+                    {{ cinema.address }}, {{ cinema.city }}
+                  </p>
+                  @if (cinema.contact_number) {
+                    <p class="cinema-phone">
+                      <i class="bi bi-telephone"></i>
+                      {{ cinema.contact_number }}
+                    </p>
+                  }
+                  @if (cinema.amenities && cinema.amenities.length > 0) {
+                    <div class="cinema-amenities">
+                      @for (amenity of cinema.amenities; track $index) {
+                        <span class="amenity-badge">{{ amenity }}</span>
+                      }
+                    </div>
+                  }
+                </div>
+                <a [routerLink]="['/cinemas', cinema.id]" class="view-details-btn">
+                  View Details
+                </a>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,394 @@
+<div class="page-shell">
+  <div class="page-header text-center">
+    <h1 class="page-title">{{ isEditMode() ? 'Edit Movie' : 'Add Movie' }}</h1>
+    <p class="page-subtitle">
+      {{ isEditMode() ? 'Update movie details and information' : 'Add a new movie to the catalog' }}
+    </p>
+  </div>
+
+  @if (loading()) {
+    <div class="section-surface">
+      <div class="flex items-center justify-center py-12">
+        <div
+          class="h-10 w-10 animate-spin rounded-full border-4 border-[#2a3644] border-t-[#3d99f5]"
+        ></div>
+      </div>
+    </div>
+  } @else {
+    @if (error()) {
+      <div class="alert-error mb-6">
+        {{ error() }}
+      </div>
+    }
+
+    <div class="flex justify-center items-start min-h-[calc(100vh-300px)]">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="w-full max-w-2xl space-y-6 px-6 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label for="title" class="block text-sm font-semibold text-gray-200"
+              >Movie Title *</label
+            >
+            <input
+              id="title"
+              type="text"
+              formControlName="title"
+              placeholder="e.g., Inception"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+            @if (form.get('title')?.invalid && form.get('title')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('title') }}</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label for="genre" class="block text-sm font-semibold text-gray-200">Genre *</label>
+            <select
+              id="genre"
+              formControlName="genre"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            >
+              <option value="" class="text-gray-600">Select a genre</option>
+              @for (genre of genreOptions; track genre) {
+                <option [value]="genre" class="text-gray-900">{{ genre }}</option>
+              }
+            </select>
+            @if (form.get('genre')?.invalid && form.get('genre')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('genre') }}</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label for="state" class="block text-sm font-semibold text-gray-200">State *</label>
+            <select
+              id="state"
+              formControlName="state"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            >
+              <option value="COMING_SOON" class="text-gray-900">Coming Soon</option>
+              <option value="SHOWING" class="text-gray-900">Showing</option>
+              <option value="ENDED" class="text-gray-900">Ended</option>
+            </select>
+            @if (form.get('state')?.invalid && form.get('state')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('state') }}</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label for="release_date" class="block text-sm font-semibold text-gray-200"
+              >Release Date *</label
+            >
+            <input
+              id="release_date"
+              type="date"
+              formControlName="release_date"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+            @if (form.get('release_date')?.invalid && form.get('release_date')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('release_date') }}</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label for="duration_minutes" class="block text-sm font-semibold text-gray-200"
+              >Duration (minutes) *</label
+            >
+            <input
+              id="duration_minutes"
+              type="number"
+              formControlName="duration_minutes"
+              placeholder="e.g., 148"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+            @if (form.get('duration_minutes')?.invalid && form.get('duration_minutes')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('duration_minutes') }}</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label for="rating" class="block text-sm font-semibold text-gray-200"
+              >Rating (0-10) *</label
+            >
+            <input
+              id="rating"
+              type="number"
+              formControlName="rating"
+              min="0"
+              max="10"
+              step="0.1"
+              placeholder="e.g., 8.8"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+            @if (form.get('rating')?.invalid && form.get('rating')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('rating') }}</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label for="director" class="block text-sm font-semibold text-gray-200"
+              >Director *</label
+            >
+            <input
+              id="director"
+              type="text"
+              formControlName="director"
+              placeholder="e.g., Christopher Nolan"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+            @if (form.get('director')?.invalid && form.get('director')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('director') }}</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label for="country" class="block text-sm font-semibold text-gray-200">Country *</label>
+            <input
+              id="country"
+              type="text"
+              formControlName="country"
+              placeholder="e.g., USA"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+            @if (form.get('country')?.invalid && form.get('country')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('country') }}</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label for="language" class="block text-sm font-semibold text-gray-200"
+              >Language *</label
+            >
+            <input
+              id="language"
+              type="text"
+              formControlName="language"
+              placeholder="e.g., English"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+            @if (form.get('language')?.invalid && form.get('language')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('language') }}</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label for="writers" class="block text-sm font-semibold text-gray-200">Writers</label>
+            <input
+              id="writers"
+              type="text"
+              formControlName="writers"
+              placeholder="e.g., John Doe, Jane Smith"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="producers" class="block text-sm font-semibold text-gray-200"
+              >Producers</label
+            >
+            <input
+              id="producers"
+              type="text"
+              formControlName="producers"
+              placeholder="e.g., Producer Names"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="budget" class="block text-sm font-semibold text-gray-200">Budget</label>
+            <input
+              id="budget"
+              type="number"
+              formControlName="budget"
+              placeholder="e.g., 160000000"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="revenue" class="block text-sm font-semibold text-gray-200">Revenue</label>
+            <input
+              id="revenue"
+              type="number"
+              formControlName="revenue"
+              placeholder="e.g., 829000000"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="production_company" class="block text-sm font-semibold text-gray-200"
+              >Production Company</label
+            >
+            <input
+              id="production_company"
+              type="text"
+              formControlName="production_company"
+              placeholder="e.g., Warner Bros. Pictures"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="distributor" class="block text-sm font-semibold text-gray-200"
+              >Distributor</label
+            >
+            <input
+              id="distributor"
+              type="text"
+              formControlName="distributor"
+              placeholder="e.g., Warner Bros. Pictures"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="image_url" class="block text-sm font-semibold text-gray-200"
+              >Image URL</label
+            >
+            <input
+              id="image_url"
+              type="url"
+              formControlName="image_url"
+              placeholder="https://example.com/poster.jpg"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="trailer_url" class="block text-sm font-semibold text-gray-200"
+              >Trailer URL</label
+            >
+            <input
+              id="trailer_url"
+              type="url"
+              formControlName="trailer_url"
+              placeholder="https://youtube.com/watch?v=abc123"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label for="awards" class="block text-sm font-semibold text-gray-200"
+            >Awards (comma-separated)</label
+          >
+          <input
+            id="awards"
+            type="text"
+            formControlName="awards"
+            placeholder="e.g., Academy Award for Best Picture, Golden Globe Nomination"
+            class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label for="details" class="block text-sm font-semibold text-gray-200"
+            >Details (JSON)</label
+          >
+          <textarea
+            id="details"
+            formControlName="details"
+            placeholder='e.g., {"imdb_rating": 8.5, "rotten_tomatoes": 92}'
+            class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base font-mono"
+            rows="4"
+          ></textarea>
+        </div>
+
+        <div class="space-y-2">
+          <label for="description" class="block text-sm font-semibold text-gray-200"
+            >Description *</label
+          >
+          <textarea
+            id="description"
+            formControlName="description"
+            placeholder="Enter detailed movie description..."
+            class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            rows="4"
+          ></textarea>
+          @if (form.get('description')?.invalid && form.get('description')?.touched) {
+            <p class="text-red-400 text-xs">{{ getErrorMessage('description') }}</p>
+          }
+        </div>
+
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <label class="block text-sm font-semibold text-gray-200">Cast Members *</label>
+            <button
+              type="button"
+              (click)="addCastMember()"
+              class="px-3 py-1 bg-[#3d99f5] text-white rounded-md hover:bg-[#2e7bc8] transition-colors text-sm"
+            >
+              + Add Cast Member
+            </button>
+          </div>
+
+          <div class="space-y-3" formArrayName="cast">
+            @for (castControl of castFormArray.controls; track $index) {
+              <div
+                class="flex gap-3 items-end p-3 bg-[#1a252f] rounded-lg border border-[#2a3644]"
+                [formGroupName]="$index"
+              >
+                <div class="flex-1">
+                  <label class="block text-xs font-medium text-gray-300 mb-1">Actor Name *</label>
+                  <input
+                    type="text"
+                    formControlName="name"
+                    placeholder="e.g., Robert Pattinson"
+                    class="w-full px-3 py-2 bg-[#0f172a] border border-[#2a3644] rounded text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-sm"
+                  />
+                </div>
+                <div class="flex-1">
+                  <label class="block text-xs font-medium text-gray-300 mb-1">Image URL</label>
+                  <input
+                    type="url"
+                    formControlName="image_url"
+                    placeholder="https://example.com/actor.jpg"
+                    class="w-full px-3 py-2 bg-[#0f172a] border border-[#2a3644] rounded text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-sm"
+                  />
+                </div>
+                <button
+                  type="button"
+                  (click)="removeCastMember($index)"
+                  class="px-2 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm"
+                  title="Remove cast member"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              </div>
+            }
+          </div>
+
+          @if (castFormArray.length === 0) {
+            <p class="text-gray-400 text-sm">
+              No cast members added yet. Click "Add Cast Member" to get started.
+            </p>
+          }
+        </div>
+
+        <div class="flex gap-4 pt-6 border-t border-[#2a3644]">
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="flex-1 px-6 py-3 rounded-lg border-2 border-[#2a3644] text-gray-300 hover:border-[#3d99f5] hover:text-[#3d99f5] hover:bg-[#3d99f5]/5 transition-colors font-semibold text-base"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="form.invalid || loading()"
+            class="flex-1 px-6 py-3 rounded-lg bg-[#3d99f5] text-white hover:bg-[#2e7bc8] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold text-base"
+          >
+            {{ loading() ? 'Saving...' : isEditMode() ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

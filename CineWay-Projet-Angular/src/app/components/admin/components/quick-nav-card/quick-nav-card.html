@@ -1,0 +1,27 @@
+<div class="bg-[#18222c] border border-[#2a3644] rounded-xl p-6 hover:border-[#3d99f5] hover:shadow-lg hover:shadow-[#3d99f5]/10 transition-all duration-200 flex gap-4 items-start">
+  <div class="w-12 h-12 rounded-lg bg-[#3d99f5]/15 flex items-center justify-center">
+    <svg
+      class="w-7 h-7 text-[#3d99f5]"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="icon()" />
+    </svg>
+  </div>
+
+  <div class="flex-1">
+    <h3 class="text-lg font-semibold text-white mb-2">{{ title() }}</h3>
+    <p class="text-gray-400 text-sm mb-4">{{ description() }}</p>
+    <a
+      [routerLink]="linkRoute()"
+      class="text-[#3d99f5] hover:text-[#2b88e4] text-sm font-semibold inline-flex items-center gap-2 transition-colors"
+    >
+      {{ linkText() }}
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+      </svg>
+    </a>
+  </div>
+</div>

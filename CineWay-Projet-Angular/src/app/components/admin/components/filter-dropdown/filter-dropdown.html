@@ -1,0 +1,21 @@
+<label class="block">
+  @if (showLabel()) {
+    <span class="block text-xs font-semibold uppercase tracking-wide text-gray-400">{{ label() }}</span>
+  }
+  <div class="relative mt-2">
+    <select
+      class="w-full appearance-none rounded-xl border border-[#2a3644] bg-[#18222c] px-4 py-3.5 text-base text-gray-100 focus:border-[#3d99f5] focus:outline-none focus:ring-2 focus:ring-[#3d99f5]/30 transition-all"
+      [value]="value()"
+      (change)="onChange($event)"
+    >
+      @for (option of options(); track option.value) {
+        <option [value]="option.value">{{ option.label }}</option>
+      }
+    </select>
+    <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" />
+      </svg>
+    </span>
+  </div>
+</label>

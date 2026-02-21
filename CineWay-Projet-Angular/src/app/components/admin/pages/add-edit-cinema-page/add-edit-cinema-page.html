@@ -1,0 +1,98 @@
+<div class="page-shell">
+  <div class="page-header text-center">
+    <h1 class="page-title">{{ isEditMode() ? 'Edit Cinema' : 'Add Cinema' }}</h1>
+    <p class="page-subtitle">{{ isEditMode() ? 'Update cinema details and information' : 'Create a new cinema location' }}</p>
+  </div>
+
+  @if (loading()) {
+    <div class="section-surface">
+      <div class="flex items-center justify-center py-12">
+        <div class="h-10 w-10 animate-spin rounded-full border-4 border-[#2a3644] border-t-[#3d99f5]"></div>
+      </div>
+    </div>
+  } @else {
+    @if (error()) {
+      <div class="alert-error mb-6">
+        {{ error() }}
+      </div>
+    }
+
+    <div class="flex justify-center items-start min-h-[calc(100vh-300px)]">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="w-full max-w-2xl space-y-6 px-6 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label for="name" class="block text-sm font-semibold text-gray-200">Cinema Name *</label>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              placeholder="e.g., Grand Plaza Cinema"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+            @if (form.get('name')?.invalid && form.get('name')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('name') }}</p>
+            }
+          </div>
+
+          <div class="space-y-2">
+            <label for="city" class="block text-sm font-semibold text-gray-200">City *</label>
+            <input
+              id="city"
+              type="text"
+              formControlName="city"
+              placeholder="e.g., New York"
+              class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            />
+            @if (form.get('city')?.invalid && form.get('city')?.touched) {
+              <p class="text-red-400 text-xs">{{ getErrorMessage('city') }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label for="address" class="block text-sm font-semibold text-gray-200">Address *</label>
+          <textarea
+            id="address"
+            formControlName="address"
+            placeholder="Enter full cinema address..."
+            class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            rows="3"
+          ></textarea>
+          @if (form.get('address')?.invalid && form.get('address')?.touched) {
+            <p class="text-red-400 text-xs">{{ getErrorMessage('address') }}</p>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <label for="amenities" class="block text-sm font-semibold text-gray-200">Amenities</label>
+          <textarea
+            id="amenities"
+            formControlName="amenities"
+            placeholder="Wheelchair Accessible, Parking Available, Food & Beverage (comma-separated)"
+            class="w-full px-4 py-3 bg-[#1a252f] border-2 border-[#2a3644] rounded-lg text-white placeholder-gray-500 focus:border-[#3d99f5] focus:outline-none transition-colors text-base"
+            rows="2"
+          ></textarea>
+          <p class="text-gray-400 text-xs">Enter amenities separated by commas</p>
+        </div>
+
+        <div class="flex gap-4 pt-6 border-t border-[#2a3644]">
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="flex-1 px-6 py-3 rounded-lg border-2 border-[#2a3644] text-gray-300 hover:border-[#3d99f5] hover:text-[#3d99f5] hover:bg-[#3d99f5]/5 transition-colors font-semibold text-base"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="loading() || form.invalid"
+            class="flex-1 px-6 py-3 rounded-lg bg-[#3d99f5] text-white hover:bg-[#2e7bc8] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold text-base"
+          >
+            {{ loading() ? 'Saving...' : isEditMode() ? 'Update' : 'Create' }}
+          </button>
+        </div>
+        </form>
+      </div>
+    }
+  
+</div>
